@@ -1,0 +1,2 @@
+export const MAP_BOX_API =
+  "pk.eyJ1Ijoia2hhbmhuZ3V5ZW4zMDA5IiwiYSI6ImNraDkwcmY4ajExYnoycG56enAyMzFub3AifQ.2oPb7l5Q6lDoygzIUCoKfQ";

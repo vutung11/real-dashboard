@@ -5,9 +5,9 @@ import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import bgImage from "assets/img/sidebar-2.jpg";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -19,11 +19,17 @@ const useStyles = makeStyles({
 });
 
 export default function MediaCard() {
+  let history = useHistory();
+
   const classes = useStyles();
+
+  const handleRealClick = () => {
+    history.push("/admin/home/:detail");
+  };
 
   return (
     <Card className={classes.root}>
-      <CardActionArea>
+      <CardActionArea onClick={handleRealClick}>
         <CardMedia
           className={classes.media}
           image={bgImage}
