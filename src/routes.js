@@ -25,8 +25,9 @@ import DashboardPage from "views/Dashboard/Dashboard.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
 import TableList from "views/TableList/TableList.js";
 import Real from "views/Real/Real.js";
+import RealDetail from "views/RealDetail/RealDetail.js";
 
-const dashboardRoutes = [
+const dashboards = [
   {
     path: "/dashboard",
     name: "Dashboard",
@@ -58,6 +59,14 @@ const dashboardRoutes = [
     layout: "/admin",
     component: Real,
   },
+  {
+    path: "/home/:detail",
+    name: "Real Detail",
+    layout: "/admin",
+    component: RealDetail,
+    icon: "",
+    hidden: true,
+  },
 ];
 
-export default dashboardRoutes;
+export default dashboards;

@@ -16,6 +16,7 @@ import AdminNavbarLinks from "components/Navbars/AdminNavbarLinks.js";
 import RTLNavbarLinks from "components/Navbars/RTLNavbarLinks.js";
 
 import styles from "assets/jss/material-dashboard-react/components/sidebarStyle.js";
+import "./Sidebar.css";
 
 const useStyles = makeStyles(styles);
 
@@ -31,6 +32,9 @@ export default function Sidebar(props) {
       {routes.map((prop, key) => {
         var activePro = " ";
         var listItemClasses;
+        let hidden = prop.hidden ? " hidden" : "";
+        console.log(hidden);
+
         if (prop.path === "/upgrade-to-pro") {
           activePro = classes.activePro + " ";
           listItemClasses = classNames({
@@ -47,7 +51,7 @@ export default function Sidebar(props) {
         return (
           <NavLink
             to={prop.layout + prop.path}
-            className={activePro + classes.item}
+            className={activePro + classes.item + hidden}
             activeClassName="active"
             key={key}
           >
