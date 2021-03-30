@@ -8,6 +8,7 @@ import Card from "components/Card/Card.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import bgImage from "assets/img/sidebar-2.jpg";
+import GridListImage from "components/GridListImage/GridListImage"
 // import "mapbox-gl/dist/mapbox-gl.css";
 import { MAP_BOX_API } from "assets/jss/_constant";
 import mapboxgl from "mapbox-gl/dist/mapbox-gl-csp";
@@ -38,8 +39,19 @@ const styles = {
     width: "100%",
     height: 400,
   },
+
+  sticky: {
+    position: 'sticky'
+  }
 };
 
+const TILE_DATA = [1,2,3,4,5,6].map((_, index) => ({
+  img: 'https://picsum.photos/id/' + index + '/' +  Math.ceil(Math.random() * 200) + '.jpg',
+  title: 'Image',
+  author: 'author',
+  cols: 2
+}))
+console.log(TILE_DATA, 'data');
 const useStyles = makeStyles(styles);
 
 const RealDetail = (props) => {
@@ -48,6 +60,7 @@ const RealDetail = (props) => {
   const [lng, setLng] = useState(-70.9);
   const [lat, setLat] = useState(42.35);
   const [zoom, setZoom] = useState(9);
+  const [tileData, setTileData] = useState(TILE_DATA);
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapContainer.current,
@@ -62,9 +75,11 @@ const RealDetail = (props) => {
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={8}>
-        <div className="map-wrapper">
+        <Card className={classes.cardSize}>
           <div ref={mapContainer} className="map-container"></div>
-        </div>
+        </Card>
+
+        <GridListImage />
       </GridItem>
       <GridItem xs={12} sm={12} md={4}>
         <Card profile>
