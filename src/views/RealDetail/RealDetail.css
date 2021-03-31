@@ -1,4 +1,3 @@
-
 .map-container {
   position: absolute;
   top: 0;
@@ -6,22 +5,21 @@
   left: 0;
   bottom: 0;
 }
-  .map-wrapper {
-    width:100%;
-    height: 500px;
-    position:relative;
-  }
+.map-wrapper {
+  width: 100%;
+  height: 500px;
+  position: relative;
+}
 
-  .mapboxgl-control-container {
-    display:none;
-  }
+.mapboxgl-control-container {
+  display: none;
+}
 
-
-.mapboxgl-canvas  {
+.mapboxgl-canvas {
   left: 0;
-  width:100% !important;
+  width: 100% !important;
 }
 
 .position-relative {
-  position:relative;
+  position: relative;
 }

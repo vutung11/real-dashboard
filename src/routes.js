@@ -26,6 +26,7 @@ import UserProfile from "views/UserProfile/UserProfile.js";
 import TableList from "views/TableList/TableList.js";
 import Real from "views/Real/Real.js";
 import RealDetail from "views/RealDetail/RealDetail.js";
+import AddReal from "views/AddReal/AddReal";
 
 const dashboards = [
   {
@@ -64,6 +65,14 @@ const dashboards = [
     name: "Real Detail",
     layout: "/admin",
     component: RealDetail,
+    icon: "",
+    hidden: true,
+  },
+  {
+    path: "/add",
+    name: "Real Add",
+    layout: "/admin",
+    component: AddReal,
     icon: "",
     hidden: true,
   },
