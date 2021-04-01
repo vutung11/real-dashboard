@@ -51,5 +51,6 @@ export default function MediaCard() {
         </Typography>
       </CardActions>
     </Card>
+
   );
 }

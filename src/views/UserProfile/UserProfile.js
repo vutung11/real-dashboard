@@ -51,8 +51,8 @@ export default function UserProfile() {
               <GridContainer>
                 <GridItem xs={12} sm={12} md={5}>
                   <CustomInput
-                    labelText="Company (disabled)"
-                    id="company-disabled"
+                    labelText="Mã Khách Hàng (disabled)"
+                    id="idUser"
                     formControlProps={{
                       fullWidth: true
                     }}
@@ -61,19 +61,19 @@ export default function UserProfile() {
                     }}
                   />
                 </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="Email Address"
+                    id="emailAddress"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                  />
+                </GridItem>
                 <GridItem xs={12} sm={12} md={3}>
                   <CustomInput
-                    labelText="Username"
-                    id="username"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Email address"
-                    id="email-address"
+                    labelText="Số Điện Thoại"
+                    id="phone"
                     formControlProps={{
                       fullWidth: true
                     }}
@@ -83,8 +83,8 @@ export default function UserProfile() {
               <GridContainer>
                 <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
-                    labelText="First Name"
-                    id="first-name"
+                    labelText="Họ Tên"
+                    id="name"
                     formControlProps={{
                       fullWidth: true
                     }}
@@ -92,8 +92,8 @@ export default function UserProfile() {
                 </GridItem>
                 <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
-                    labelText="Last Name"
-                    id="last-name"
+                    labelText="Mật Khẩu"
+                    id="password"
                     formControlProps={{
                       fullWidth: true
                     }}
@@ -103,8 +103,8 @@ export default function UserProfile() {
               <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
-                    labelText="City"
-                    id="city"
+                    labelText="Địa Chỉ"
+                    id="address"
                     formControlProps={{
                       fullWidth: true
                     }}
@@ -112,35 +112,10 @@ export default function UserProfile() {
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
-                    labelText="Country"
-                    id="country"
+                    labelText="Chức Vụ"
+                    id="role"
                     formControlProps={{
                       fullWidth: true
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Postal Code"
-                    id="postal-code"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={12}>
-                  <InputLabel style={{ color: "#AAAAAA" }}>About me</InputLabel>
-                  <CustomInput
-                    labelText="Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo."
-                    id="about-me"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                    inputProps={{
-                      multiline: true,
-                      rows: 5
                     }}
                   />
                 </GridItem>
