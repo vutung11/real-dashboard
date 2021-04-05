@@ -13,6 +13,9 @@ import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import avatar from "assets/img/faces/marc.jpg";
+import Image from 'material-ui-image';
+import banner from "assets/img/cover.jpeg";
+import './styles.css';
 
 const styles = {
   cardCategoryWhite: {
@@ -55,31 +58,31 @@ export default function UserProfile() {
               <GridContainer>
                 <GridItem xs={12} sm={12} md={5}>
                   <CustomInput
-                    labelText="Company (disabled)"
-                    id="company-disabled"
+                    labelText="Mã Khách Hàng (disabled)"
+                    id="idUser"
                     formControlProps={{
-                      fullWidth: true,
+                      fullWidth: true
                     }}
                     inputProps={{
-                      disabled: true,
+                      disabled: true
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="Email Address"
+                    id="emailAddress"
+                    formControlProps={{
+                      fullWidth: true
                     }}
                   />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={3}>
                   <CustomInput
-                    labelText="Username"
-                    id="username"
+                    labelText="Số Điện Thoại"
+                    id="phone"
                     formControlProps={{
-                      fullWidth: true,
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Email address"
-                    id="email-address"
-                    formControlProps={{
-                      fullWidth: true,
+                      fullWidth: true
                     }}
                   />
                 </GridItem>
@@ -87,19 +90,19 @@ export default function UserProfile() {
               <GridContainer>
                 <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
-                    labelText="First Name"
-                    id="first-name"
+                    labelText="Họ Tên"
+                    id="name"
                     formControlProps={{
-                      fullWidth: true,
+                      fullWidth: true
                     }}
                   />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
-                    labelText="Last Name"
-                    id="last-name"
+                    labelText="Mật Khẩu"
+                    id="password"
                     formControlProps={{
-                      fullWidth: true,
+                      fullWidth: true
                     }}
                   />
                 </GridItem>
@@ -107,44 +110,19 @@ export default function UserProfile() {
               <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
-                    labelText="City"
-                    id="city"
+                    labelText="Địa Chỉ"
+                    id="address"
                     formControlProps={{
-                      fullWidth: true,
+                      fullWidth: true
                     }}
                   />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
-                    labelText="Country"
-                    id="country"
+                    labelText="Chức Vụ"
+                    id="role"
                     formControlProps={{
-                      fullWidth: true,
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Postal Code"
-                    id="postal-code"
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={12}>
-                  <InputLabel style={{ color: "#AAAAAA" }}>About me</InputLabel>
-                  <CustomInput
-                    labelText="Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo."
-                    id="about-me"
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                    inputProps={{
-                      multiline: true,
-                      rows: 5,
+                      fullWidth: true
                     }}
                   />
                 </GridItem>
@@ -154,7 +132,6 @@ export default function UserProfile() {
               <Button color="primary">Update Profile</Button>
             </CardFooter>
           </Card>
-
           <Card className={classes.cardMargin}>
             <CardHeader color="primary">
               <h4 className={classes.cardTitleWhite}>Realestate Banner</h4>
@@ -162,9 +139,14 @@ export default function UserProfile() {
             <CardBody>
               <GridItem xs={12} sm={12} md={12}>
                 <Button variant="contained" component="label">
-                  Upload File
+                  Thêm Banner
                   <input type="file" hidden />
                 </Button>
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={12}>
+                    <Image className="banner" src={ banner } />
+                  </GridItem>
+                </GridContainer>
               </GridItem>
             </CardBody>
           </Card>
@@ -187,6 +169,47 @@ export default function UserProfile() {
               <Button color="primary" round>
                 Follow
               </Button>
+            </CardBody>
+          </Card>
+        </GridItem>
+        <GridItem xs={12} sm={12} md={12}>
+        <Card className={classes.cardMargin}>
+            <CardHeader color="primary">
+              <h4 className={classes.cardTitleWhite}>Realestate Images</h4>
+            </CardHeader>
+            <CardBody>
+              <GridItem xs={12} sm={12} md={12}>
+                <Button variant="contained" component="label">
+                  Thêm Hình
+                  <input type="file" hidden />
+                </Button>
+                <GridContainer >
+                  <GridItem xs={3} sm={3} md={3}>
+                    <Image className="imgUrl" src={ banner } />
+                  </GridItem>
+                  <GridItem xs={3} sm={3} md={3}>
+                    <Image className="imgUrl" src={ banner } />
+                  </GridItem>
+                  <GridItem xs={3} sm={3} md={3}>
+                    <Image className="imgUrl" src={ banner } />
+                  </GridItem>
+                  <GridItem xs={3} sm={3} md={3}>
+                    <Image className="imgUrl" src={ banner } />
+                  </GridItem>
+                  <GridItem xs={3} sm={3} md={3}>
+                    <Image className="imgUrl" src={ banner } />
+                  </GridItem>
+                  <GridItem xs={3} sm={3} md={3}>
+                    <Image className="imgUrl" src={ banner } />
+                  </GridItem>
+                  <GridItem xs={3} sm={3} md={3}>
+                    <Image className="imgUrl" src={ banner } />
+                  </GridItem>
+                  <GridItem xs={3} sm={3} md={3}>
+                    <Image className="imgUrl" src={ banner } />
+                  </GridItem>
+                </GridContainer>
+              </GridItem>
             </CardBody>
           </Card>
         </GridItem>
