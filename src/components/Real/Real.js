@@ -9,6 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import bgImage from "assets/img/sidebar-2.jpg";
 import { useHistory } from "react-router-dom";
 
+
 const useStyles = makeStyles({
   root: {
     maxWidth: 345,
@@ -18,18 +19,18 @@ const useStyles = makeStyles({
   },
 });
 
-export default function MediaCard() {
+export default function MediaCard({ item }) {
   let history = useHistory();
 
   const classes = useStyles();
 
-  const handleRealClick = () => {
-    history.push("/admin/home/:detail");
+  const handleRealClick = (item) => {
+    history.push("/admin/home/" + item.id_nha);
   };
 
   return (
     <Card className={classes.root}>
-      <CardActionArea onClick={handleRealClick}>
+      <CardActionArea onClick={() => handleRealClick(item)}>
         <CardMedia
           className={classes.media}
           image={bgImage}
@@ -37,17 +38,16 @@ export default function MediaCard() {
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
-            Lizard
+
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
+            { item.thanh_pho + '/' + item.phuong + '/' +item.quan }
           </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions>
         <Typography variant="h6" color="textSecondary" component="span">
-          aaa
+          { item.gia + ' VND' }
         </Typography>
       </CardActions>
     </Card>

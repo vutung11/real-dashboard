@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useParams } from 'react-router-dom'
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import "./RealDetail.css";
@@ -9,11 +10,13 @@ import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import bgImage from "assets/img/sidebar-2.jpg";
 import GridListImage from "components/GridListImage/GridListImage"
+import axios from "axios"
 // import "mapbox-gl/dist/mapbox-gl.css";
 import { MAP_BOX_API } from "assets/jss/_constant";
 import mapboxgl from "mapbox-gl/dist/mapbox-gl-csp";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import MapboxWorker from "worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker"; // Load worker code separately with worker-loader
+import { API_KEY } from "../../shared/_constant";
 
 mapboxgl.workerClass = MapboxWorker; // Wire up loaded worker to be used instead of the default
 mapboxgl.accessToken = MAP_BOX_API;
@@ -51,16 +54,17 @@ const TILE_DATA = [1,2,3,4,5,6].map((_, index) => ({
   author: 'author',
   cols: 2
 }))
-console.log(TILE_DATA, 'data');
 const useStyles = makeStyles(styles);
 
 const RealDetail = (props) => {
   const classes = useStyles();
+  const { detail } = useParams();
   const mapContainer = useRef();
   const [lng, setLng] = useState(-70.9);
   const [lat, setLat] = useState(42.35);
-  const [zoom, setZoom] = useState(9);
+  const [zoom, setZoom] = useState(15);
   const [tileData, setTileData] = useState(TILE_DATA);
+  const [realData, setRealData] = useState({});
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapContainer.current,
@@ -71,6 +75,18 @@ const RealDetail = (props) => {
 
     return () => map.remove();
   });
+
+  useEffect(() => {
+      const fetchApi = async () => {
+        const data = await axios.get(`${API_KEY}/nha/${detail}`)
+        setRealData(data.data)
+        console.log(data.data.nha.x, data.data.nha.y)
+        setLng(data.data.nha.y);
+        setLat(data.data.nha.x);
+      }
+
+      fetchApi()
+    }, [])
 
   return (
     <GridContainer>

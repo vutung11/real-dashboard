@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
+import axios from "axios";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -42,6 +43,7 @@ const styles = {
 const useStyles = makeStyles(styles);
 
 export default function TableList() {
+
   const classes = useStyles();
   return (
     <GridContainer>
@@ -54,18 +56,6 @@ export default function TableList() {
             </p>
           </CardHeader>
           <CardBody>
-            <Table
-              tableHeaderColor="primary"
-              tableHead={["Name", "Country", "City", "Salary"]}
-              tableData={[
-                ["Dakota Rice", "Niger", "Oud-Turnhout", "$36,738"],
-                ["Minerva Hooper", "Curaçao", "Sinaai-Waas", "$23,789"],
-                ["Sage Rodriguez", "Netherlands", "Baileux", "$56,142"],
-                ["Philip Chaney", "Korea, South", "Overland Park", "$38,735"],
-                ["Doris Greene", "Malawi", "Feldkirchen in Kärnten", "$63,542"],
-                ["Mason Porter", "Chile", "Gloucester", "$78,615"]
-              ]}
-            />
           </CardBody>
         </Card>
       </GridItem>

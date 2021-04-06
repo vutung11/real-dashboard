@@ -1,10 +1,12 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Real from "components/Real/Real.js";
 import { Link } from "react-router-dom";
+import axios from "axios";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,7 +24,16 @@ const useStyles = makeStyles((theme) => ({
 export default function SpacingGrid() {
   const [spacing, setSpacing] = React.useState(2);
   const classes = useStyles();
-
+  const [realData, setRealData] = useState([])
+  const apiUrl = "http://776d1b251ee4.ngrok.io/api";
+  useEffect( () => {
+    const fetchData = async () => {
+      const data = await axios.get(`${apiUrl}/nha`);
+      setRealData(data.data);
+      console.log(data.data, '1111111111')
+    }
+    fetchData();
+  }, [])
   const handleChange = (event) => {
     setSpacing(Number(event.target.value));
   };
@@ -33,10 +44,10 @@ export default function SpacingGrid() {
       <Link to="add"><Button variant="contained" color="primary">Thêm Nhà</Button></Link>
     </Grid>
     <Grid container justify="flex-start" spacing={spacing}>
-      {[0, 1, 2, 3].map((value) => (
-        <Grid xs={3} key={value} item>
+      {realData.map((value) => (
+        <Grid xs={3} key={value.id_nha} item>
           {/* <Paper className={classes.paper} /> */}
-          <Real />
+          <Real item={value}  />
         </Grid>
       ))}
     </Grid>
