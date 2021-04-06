@@ -128,9 +128,6 @@ export default function UserProfile() {
                 </GridItem>
               </GridContainer>
             </CardBody>
-            <CardFooter>
-              <Button color="primary">Update Profile</Button>
-            </CardFooter>
           </Card>
         </GridItem>
         <GridItem xs={12} sm={12} md={6}>
@@ -146,7 +143,7 @@ export default function UserProfile() {
                 </Button>
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
-                    <Image className="banner" src={ banner } />
+                    <img className="banner" src={ banner } alt=""></img>
                   </GridItem>
                 </GridContainer>
               </GridItem>
@@ -194,6 +191,11 @@ export default function UserProfile() {
               </GridItem>
             </CardBody>
           </Card>
+          <GridContainer container justify="flex-end">
+            <GridItem>
+              <Button color="primary">Update Profile</Button>
+            </GridItem>
+          </GridContainer>
         </GridItem>
       </GridContainer>
     </div>

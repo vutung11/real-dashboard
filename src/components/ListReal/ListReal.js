@@ -7,6 +7,7 @@ import Real from "components/Real/Real.js";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
+import { API_KEY } from "../../shared/_constant";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,12 +26,16 @@ export default function SpacingGrid() {
   const [spacing, setSpacing] = React.useState(2);
   const classes = useStyles();
   const [realData, setRealData] = useState([])
-  const apiUrl = "http://776d1b251ee4.ngrok.io/api";
+  const apiUrl = API_KEY;
   useEffect( () => {
     const fetchData = async () => {
-      const data = await axios.get(`${apiUrl}/nha`);
-      setRealData(data.data);
-      console.log(data.data, '1111111111')
+      try{
+        const data = await axios.get(`${apiUrl}/nha`);
+        setRealData(data.data);
+        console.log(data.data, '1111111111')
+      } catch (error) {
+        console.log('Failed to fetch post list:', error.message);
+      }
     }
     fetchData();
   }, [])
