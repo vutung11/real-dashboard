@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -14,6 +14,9 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import avatar from "assets/img/faces/marc.jpg";
+import {API_KEY} from "../../shared/_constant";
+import {useParams} from "react-router-dom";
+import axios from 'axios'
 
 const styles = {
   cardCategoryWhite: {
@@ -38,9 +41,32 @@ const useStyles = makeStyles(styles);
 
 export default function UserProfile() {
   const classes = useStyles();
+  const [user, setUser] = useState({})
+  const { id } = useParams();
+  useEffect(() => {
+    const fetchData = async () => {
+      if(!id) {
+        window.location = 'http://localhost:3001/login';
+      }
+      const data = await axios.get(`${API_KEY}/khach_hang/${id}`)
+      setUser(data.data)
+      console.log(data, 'data')
+      localStorage.setItem('auth', JSON.stringify(data.data))
+      console.log(user, 'user')
+    }
+
+    // fetchData()
+    // if(!localStorage.getItem('auth')) {
+    //   window.location = 'http://localhost:3001/login';
+    // } else {
+    //   fetchData();
+    // }
+    fetchData();
+  }, [])
   return (
     <div>
       <GridContainer>
+
         <GridItem xs={12} sm={12} md={8}>
           <Card>
             <CardHeader color="primary">
@@ -65,6 +91,13 @@ export default function UserProfile() {
                   <CustomInput
                     labelText="Email Address"
                     id="emailAddress"
+                    inputProps={
+                      {
+                        value: user.email,
+                        autoFocus: true
+
+                      }
+                    }
                     formControlProps={{
                       fullWidth: true
                     }}
@@ -74,49 +107,49 @@ export default function UserProfile() {
                   <CustomInput
                     labelText="Số Điện Thoại"
                     id="phone"
+                    inputProps={
+                      {
+                        value: user.sdt
+                      }
+                    }
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
+                      autoFocus: true
+
                     }}
                   />
                 </GridItem>
               </GridContainer>
               <GridContainer>
-                <GridItem xs={12} sm={12} md={6}>
+                <GridItem xs={12} sm={12} md={5}>
                   <CustomInput
                     labelText="Họ Tên"
                     id="name"
                     formControlProps={{
                       fullWidth: true
                     }}
+                    inputProps={
+                      {
+                        value: user.ho_ten,
+                        autoFocus: true
+                      }
+                    }
                   />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
-                    labelText="Mật Khẩu"
-                    id="password"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Địa Chỉ"
-                    id="address"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Chức Vụ"
-                    id="role"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
+                      labelText="Địa Chỉ"
+                      id="address"
+                      formControlProps={{
+                        fullWidth: true
+                      }}
+                      inputProps={
+                        {
+                          value: user.dia_chi,
+                          autoFocus: true
+
+                        }
+                      }
                   />
                 </GridItem>
               </GridContainer>
@@ -141,9 +174,6 @@ export default function UserProfile() {
                 human foundation in truth And I love you like Kanye loves Kanye
                 I love Rick Owens’ bed design but the back is...
               </p>
-              <Button color="primary" round>
-                Follow
-              </Button>
             </CardBody>
           </Card>
         </GridItem>
