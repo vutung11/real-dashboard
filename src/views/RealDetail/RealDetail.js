@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import "./RealDetail.css";
+import Grid from '@material-ui/core/Grid';
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
@@ -65,6 +66,7 @@ const RealDetail = (props) => {
   const [zoom, setZoom] = useState(15);
   const [tileData, setTileData] = useState(TILE_DATA);
   const [realData, setRealData] = useState({});
+
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapContainer.current,
@@ -78,15 +80,20 @@ const RealDetail = (props) => {
 
   useEffect(() => {
       const fetchApi = async () => {
-        const data = await axios.get(`${API_KEY}/nha/${detail}`)
-        setRealData(data.data)
-        console.log(data.data.nha.x, data.data.nha.y)
-        setLng(data.data.nha.y);
-        setLat(data.data.nha.x);
+        try {
+          const data = await axios.get(`${API_KEY}/nha/${detail}`)
+          setRealData(data.data)
+          setLng(data.data.nha.lat);
+          setLat(data.data.nha.lon);
+          console.log(data.data);
+        } catch(e) {
+          console.log(e)
+        }
       }
 
       fetchApi()
     }, [])
+
 
   return (
     <GridContainer>
@@ -95,7 +102,14 @@ const RealDetail = (props) => {
           <div ref={mapContainer} className="map-container"></div>
         </Card>
 
-        <GridListImage />
+            <Grid container spacing={3}  item/>
+              <Grid item xs={12}>
+                <img src={realData.nha ? realData.nha.banner : ''}></img>
+              </Grid>
+              {realData.map(())}
+              <Grid item xs={6}>
+                {/* <img src={value.hinh}></img> */}
+              </Grid>
       </GridItem>
       <GridItem xs={12} sm={12} md={4}>
         <Card profile>
