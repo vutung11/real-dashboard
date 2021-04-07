@@ -38,7 +38,7 @@ const dashboards = [
     layout: "/admin",
   },
   {
-    path: "/user",
+    path: "/user/:id",
     name: "User Profile",
     rtlName: "ملف تعريفي للمستخدم",
     icon: Person,
