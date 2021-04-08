@@ -2,6 +2,7 @@ import React from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
+import Input from "@material-ui/core/Input";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -16,6 +17,7 @@ import avatar from "assets/img/faces/marc.jpg";
 import Image from 'material-ui-image';
 import banner from "assets/img/cover.jpeg";
 import './styles.css';
+import { FormControl } from "@material-ui/core";
 
 const styles = {
   cardCategoryWhite: {
@@ -56,8 +58,12 @@ export default function UserProfile() {
             </CardHeader>
             <CardBody>
               <GridContainer>
-                <GridItem xs={12} sm={12} md={5}>
-                  <CustomInput
+                <GridItem xs={12} sm={12} md={4}>
+                  <FormControl className="form-control">
+                    <InputLabel htmlFor="idUser" shrink="true">Mã Khách Hàng</InputLabel>
+                    <Input name="idUser" id="idUser" disabled="true" fullWidth="true"/>
+                  </FormControl>
+                  {/* <CustomInput
                     labelText="Mã Khách Hàng (disabled)"
                     id="idUser"
                     formControlProps={{
@@ -66,65 +72,89 @@ export default function UserProfile() {
                     inputProps={{
                       disabled: true
                     }}
-                  />
+                  /> */}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
+                <FormControl className="form-control">
+                  <InputLabel htmlFor="emailAddress" shrink="true">Email Address</InputLabel>
+                  <Input name="emailAddress" id="emailAddress" fullWidth="true"/>
+                </FormControl>
+                  {/* <CustomInput
                     labelText="Email Address"
                     id="emailAddress"
                     formControlProps={{
                       fullWidth: true
                     }}
-                  />
+                  /> */}
                 </GridItem>
-                <GridItem xs={12} sm={12} md={3}>
-                  <CustomInput
+                <GridItem xs={12} sm={12} md={4}>
+                  <FormControl className="form-control">
+                    <InputLabel htmlFor="phone" shrink="true">Số Điện Thoại</InputLabel>
+                    <Input name="phone" id="phone" fullWidth="true"/>
+                  </FormControl>
+                  {/* <CustomInput
                     labelText="Số Điện Thoại"
                     id="phone"
                     formControlProps={{
                       fullWidth: true
                     }}
-                  />
+                  /> */}
                 </GridItem>
               </GridContainer>
               <GridContainer>
                 <GridItem xs={12} sm={12} md={6}>
-                  <CustomInput
+                  <FormControl className="form-control">
+                    <InputLabel htmlFor="name" shrink="true">Họ Tên</InputLabel>
+                    <Input name="name" id="name" fullWidth="true"/>
+                  </FormControl>
+                  {/* <CustomInput
                     labelText="Họ Tên"
                     id="name"
                     formControlProps={{
                       fullWidth: true
                     }}
-                  />
+                  /> */}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={6}>
-                  <CustomInput
+                  <FormControl className="form-control">
+                    <InputLabel htmlFor="password" shrink="true">Mật Khẩu</InputLabel>
+                    <Input name="password" id="password" fullWidth="true"/>
+                  </FormControl>
+                  {/* <CustomInput
                     labelText="Mật Khẩu"
                     id="password"
                     formControlProps={{
                       fullWidth: true
                     }}
-                  />
+                  /> */}
                 </GridItem>
               </GridContainer>
               <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
+                  <FormControl className="form-control">
+                    <InputLabel htmlFor="address" shrink="true">Địa Chỉ</InputLabel>
+                    <Input name="address" id="address" fullWidth="true"/>
+                  </FormControl>
+                  {/* <CustomInput
                     labelText="Địa Chỉ"
                     id="address"
                     formControlProps={{
                       fullWidth: true
                     }}
-                  />
+                  /> */}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
+                  <FormControl className="form-control">
+                    <InputLabel htmlFor="role" shrink="true">Chức Vụ</InputLabel>
+                    <Input name="role" id="role" fullWidth="true"/>
+                  </FormControl>
+                  {/* <CustomInput
                     labelText="Chức Vụ"
                     id="role"
                     formControlProps={{
                       fullWidth: true
                     }}
-                  />
+                  /> */}
                 </GridItem>
               </GridContainer>
             </CardBody>

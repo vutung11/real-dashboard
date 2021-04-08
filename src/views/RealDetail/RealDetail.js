@@ -94,22 +94,36 @@ const RealDetail = (props) => {
       fetchApi()
     }, [])
 
-
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={8}>
         <Card className={classes.cardSize}>
           <div ref={mapContainer} className="map-container"></div>
         </Card>
-
             <Grid container spacing={3}  item/>
               <Grid item xs={12}>
-                <img src={realData.nha ? realData.nha.banner : ''}></img>
+                <img className="banner" src={realData.nha ? realData.nha.banner : ''}></img>
               </Grid>
-              {realData.map(())}
               <Grid item xs={6}>
-                {/* <img src={value.hinh}></img> */}
+                <img src={realData.hinh ? 
+                `${realData.hinh.map((value) => (
+                  <div key={value.id}>
+                    {value.link}
+                  </div>
+                ))}` : ''}></img>
               </Grid>
+              {/* {realData.map((value) => (
+                <Grid item xs={6} key={value.hinh}>
+                  <img src={value.link}></img>
+                </Grid>
+              ))} */}
+              {/* <GridContainer>
+                {realData.hinh.map((value) => (
+                  <Grid key={value.id}>
+                    <img src={value.link}></img>
+                  </Grid>
+                ))}
+              </GridContainer> */}
       </GridItem>
       <GridItem xs={12} sm={12} md={4}>
         <Card profile>
