@@ -19,6 +19,8 @@ import {useParams} from "react-router-dom";
 import axios from 'axios'
 import { FormControl, Input } from "@material-ui/core";
 
+import './styles.css';
+
 const styles = {
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
