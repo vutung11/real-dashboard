@@ -1,1 +1,1 @@
-export const API_KEY = 'http://a657214e15a7.ngrok.io/api';
+export const API_KEY = 'http://74ccea3bee60.ngrok.io/api';

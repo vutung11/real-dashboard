@@ -17,6 +17,7 @@ import avatar from "assets/img/faces/marc.jpg";
 import {API_KEY} from "../../shared/_constant";
 import {useParams} from "react-router-dom";
 import axios from 'axios'
+import { FormControl, Input } from "@material-ui/core";
 
 const styles = {
   cardCategoryWhite: {
@@ -75,8 +76,12 @@ export default function UserProfile() {
             </CardHeader>
             <CardBody>
               <GridContainer>
-                <GridItem xs={12} sm={12} md={5}>
-                  <CustomInput
+                <GridItem xs={12} sm={12} md={4}>
+                  <FormControl className="form-control">
+                    <InputLabel htmlFor="idUser" shrink="true">Mã Khách Hàng</InputLabel>
+                    <Input name="idUser" id="idUser" disabled="true" fullWidth="true"/>
+                  </FormControl>
+                  {/* <CustomInput
                     labelText="Mã Khách Hàng (disabled)"
                     id="idUser"
                     formControlProps={{
@@ -85,10 +90,14 @@ export default function UserProfile() {
                     inputProps={{
                       disabled: true
                     }}
-                  />
+                  /> */}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
+                  <FormControl className="form-control">
+                    <InputLabel htmlFor="emailAddress" shrink="true">Email Address</InputLabel>
+                    <Input name="emailAddress" id="emailAddress" fullWidth="true"/>
+                  </FormControl>
+                  {/* <CustomInput
                     labelText="Email Address"
                     id="emailAddress"
                     inputProps={
@@ -101,10 +110,14 @@ export default function UserProfile() {
                     formControlProps={{
                       fullWidth: true
                     }}
-                  />
+                  /> */}
                 </GridItem>
-                <GridItem xs={12} sm={12} md={3}>
-                  <CustomInput
+                <GridItem xs={12} sm={12} md={4}>
+                  <FormControl className="form-control">
+                    <InputLabel htmlFor="phone" shrink="true">Số Điện Thoại</InputLabel>
+                    <Input name="phone" id="phone" fullWidth="true"/>
+                  </FormControl>
+                  {/* <CustomInput
                     labelText="Số Điện Thoại"
                     id="phone"
                     inputProps={
@@ -117,12 +130,16 @@ export default function UserProfile() {
                       autoFocus: true
 
                     }}
-                  />
+                  /> */}
                 </GridItem>
               </GridContainer>
               <GridContainer>
-                <GridItem xs={12} sm={12} md={5}>
-                  <CustomInput
+                <GridItem xs={12} sm={12} md={6}>
+                  <FormControl className="form-control">
+                    <InputLabel htmlFor="name" shrink="true">Họ Tên</InputLabel>
+                    <Input name="name" id="name" fullWidth="true"/>
+                  </FormControl>
+                  {/* <CustomInput
                     labelText="Họ Tên"
                     id="name"
                     formControlProps={{
@@ -134,10 +151,14 @@ export default function UserProfile() {
                         autoFocus: true
                       }
                     }
-                  />
+                  /> */}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={6}>
-                  <CustomInput
+                  <FormControl className="form-control">
+                    <InputLabel htmlFor="address" shrink="true">Địa Chỉ</InputLabel>
+                    <Input name="address" id="address" fullWidth="true"/>
+                  </FormControl>
+                  {/* <CustomInput
                       labelText="Địa Chỉ"
                       id="address"
                       formControlProps={{
@@ -150,7 +171,7 @@ export default function UserProfile() {
 
                         }
                       }
-                  />
+                  /> */}
                 </GridItem>
               </GridContainer>
             </CardBody>
