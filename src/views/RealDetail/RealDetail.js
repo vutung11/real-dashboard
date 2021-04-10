@@ -7,6 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
+import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import bgImage from "assets/img/sidebar-2.jpg";
@@ -18,6 +19,7 @@ import mapboxgl from "mapbox-gl/dist/mapbox-gl-csp";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import MapboxWorker from "worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker"; // Load worker code separately with worker-loader
 import { API_KEY } from "../../shared/_constant";
+import { API_KEY_IMG } from "../../shared/_constant";
 
 mapboxgl.workerClass = MapboxWorker; // Wire up loaded worker to be used instead of the default
 mapboxgl.accessToken = MAP_BOX_API;
@@ -85,7 +87,7 @@ const RealDetail = (props) => {
           setRealData(data.data)
           setLng(data.data.nha.lat);
           setLat(data.data.nha.lon);
-          console.log(data.data);
+          console.log(data.data.hinh);
         } catch(e) {
           console.log(e)
         }
@@ -100,30 +102,37 @@ const RealDetail = (props) => {
         <Card className={classes.cardSize}>
           <div ref={mapContainer} className="map-container"></div>
         </Card>
-            <Grid container spacing={3}  item/>
-              <Grid item xs={12}>
-                <img className="banner" src={realData.nha ? realData.nha.banner : ''}></img>
-              </Grid>
-              <Grid item xs={6}>
+            <Grid container spacing={3} item/>
+              <Card className={classes.cardMargin}>
+                <CardHeader color="primary">
+                  <h4 className={classes.cardTitleWhite}>Banner</h4>
+                </CardHeader>
+                <CardBody>
+                  <Grid item xs={12}>
+                    <img className="banner" src={realData.nha ? API_KEY_IMG+realData.nha.banner : ''}></img>
+                  </Grid>
+                </CardBody>
+              </Card>
+              {/* <Grid item xs={6}>
                 <img src={realData.hinh ? 
                 `${realData.hinh.map((value) => (
                   <div key={value.id}>
                     {value.link}
                   </div>
                 ))}` : ''}></img>
-              </Grid>
+              </Grid> */}
               {/* {realData.map((value) => (
                 <Grid item xs={6} key={value.hinh}>
                   <img src={value.link}></img>
                 </Grid>
               ))} */}
-              {/* <GridContainer>
-                {realData.hinh.map((value) => (
-                  <Grid key={value.id}>
-                    <img src={value.link}></img>
+              <GridContainer>
+                {realData.hinh && realData.hinh.map((value) => (
+                  <Grid key={value.id} item xs={4}>
+                    <img className="imgUrl" src={API_KEY_IMG+value.link}></img>
                   </Grid>
                 ))}
-              </GridContainer> */}
+              </GridContainer>
       </GridItem>
       <GridItem xs={12} sm={12} md={4}>
         <Card profile>
