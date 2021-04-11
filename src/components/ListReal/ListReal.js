@@ -7,6 +7,7 @@ import Real from "components/Real/Real.js";
 import { Link } from "react-router-dom";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Search from "@material-ui/icons/Search";
+import Select from "@material-ui/core/Select";
 import axios from "axios";
 
 import { API_KEY } from "../../shared/_constant";
@@ -88,7 +89,7 @@ export default function SpacingGrid() {
         </div>
       </Grid>
       <Grid container justify="flex-end" style={{ paddingBottom: 20 }}>
-        <Link to="add">
+        <Link to="addproduct">
           <Button variant="contained" color="primary">
             Thêm Nhà
           </Button>

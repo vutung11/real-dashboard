@@ -9,7 +9,6 @@ import Typography from "@material-ui/core/Typography";
 import bgImage from "assets/img/sidebar-2.jpg";
 import { useHistory } from "react-router-dom";
 
-
 const useStyles = makeStyles({
   root: {
     maxWidth: 345,
@@ -37,20 +36,17 @@ export default function MediaCard({ item }) {
           title="Contemplative Reptile"
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-
-          </Typography>
+          <Typography gutterBottom variant="h5" component="h2"></Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            { item.thanh_pho + '/' + item.phuong + '/' +item.quan }
+            {item.thanh_pho + "/" + item.phuong + "/" + item.quan}
           </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions>
         <Typography variant="h6" color="textSecondary" component="span">
-          { item.gia + ' VND' }
+          {item.gia + " VND"}
         </Typography>
       </CardActions>
     </Card>
-
   );
 }

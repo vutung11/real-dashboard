@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
+import { Select, MenuItem, NativeSelect } from "@material-ui/core";
+import { Tabs, Tab, AppBar } from "@material-ui/core";
+
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -14,10 +17,21 @@ import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import avatar from "assets/img/faces/marc.jpg";
-import Image from 'material-ui-image';
+import Image from "material-ui-image";
 import banner from "assets/img/cover.jpeg";
-import './styles.css';
+
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
+import TextField from '@material-ui/core/TextField';
+import InputBase from '@material-ui/core/InputBase';
+
+
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+
+
+import "./styles.css";
 import { FormControl } from "@material-ui/core";
+import { setConstantValue } from "typescript";
 
 const styles = {
   cardCategoryWhite: {
@@ -37,185 +51,251 @@ const styles = {
     textDecoration: "none",
   },
   cardMargin: {
-    marginTop: 50,
+    marginTop: 0,
   },
+  name: {
+    color: "red",
+  }
 };
 
 const useStyles = makeStyles(styles);
-
+const Panel = (props) => (
+  <div hidden={props.value !== props.index}>
+    {props.value === props.index && <Typography>{props.children}</Typography>}
+  </div>
+);
+const BootstrapInput = withStyles((theme) => ({
+  root: {
+    'label + &': {
+      marginTop: theme.spacing(1),
+    },
+  },
+  input: {
+    borderRadius: 4,
+    position: 'relative',
+    backgroundColor: theme.palette.background.paper,
+    border: '1px solid #ced4da',
+    fontSize: 14,
+    padding: '10px 26px 13px 12px',
+    transition: theme.transitions.create(['border-color', 'box-shadow']),
+    // Use the system font instead of the default Roboto font.
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+    '&:focus': {
+      borderRadius: 4,
+      borderColor: '#80bdff',
+      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+    },
+  },
+}))(InputBase);
 export default function UserProfile() {
+
+
   const classes = useStyles();
+  const [index, setIndex] = useState(0);
+  const [country, setCountry] = React.useState('');
+  const [val, setVal] = React.useState('');
+  const onTabClick = (e, index) => {
+    setIndex(index);
+  };
+  const handleChange = (e) => {
+    console.log(e.target.value)
+    setCountry(e.target.value);
+  };
+  const handleTabs = (e) => {
+    console.log(e.target.value);
+    setVal(e.target.value);
+  }
+
   return (
     <div>
       <GridContainer>
-        <GridItem xs={12} sm={12} md={6}>
-          <Card>
-            <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Add Realestate</h4>
-              <p className={classes.cardCategoryWhite}>
-                Complete Realestate Profile
-              </p>
-            </CardHeader>
-            <CardBody>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
-                  <FormControl className="form-control">
-                    <InputLabel htmlFor="idUser" shrink="true">Mã Khách Hàng</InputLabel>
-                    <Input name="idUser" id="idUser" disabled="true" fullWidth="true"/>
-                  </FormControl>
-                  {/* <CustomInput
-                    labelText="Mã Khách Hàng (disabled)"
-                    id="idUser"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                    inputProps={{
-                      disabled: true
-                    }}
-                  /> */}
+        <GridItem xs={12} sm={4} >
+          <Card xs={12} sm={4}>
+
+            {/* <TextField id="outlined-basic" label="Nhập tiêu đề nhà" variant="outlined" />
+          <TextareaAutosize aria-label="empty textarea" placeholder="Empty" /> */}
+            <Tabs position="static" value={index} onChange={onTabClick} variant="small" >
+              <Tab label="Vị trí" />
+              <Tab label="Thông tin" />
+            </Tabs>
+
+            <Panel value={index} index={0} className={classes.name} >
+              <GridItem xs={12} sm={12}>
+                <GridItem style={{ marginTop: 12 }}>
+                  <InputLabel >Tỉnh/Thành Phố</InputLabel>
+                  <NativeSelect style={{ minWidth: '100%' }} value={country} displayEmpty onChange={handleChange}
+                    input={<BootstrapInput />}
+
+                  >
+                    <option value="" disabled>
+                      Chọn
+                  </option>
+                    <option value={1}>Hồ Chí Minh</option>
+                    <option value={2}>Đà Nẵng</option>
+                    <option value={3}>Hải Phòng</option>
+                  </NativeSelect>
                 </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                <FormControl className="form-control">
-                  <InputLabel htmlFor="emailAddress" shrink="true">Email Address</InputLabel>
-                  <Input name="emailAddress" id="emailAddress" fullWidth="true"/>
-                </FormControl>
-                  {/* <CustomInput
-                    labelText="Email Address"
-                    id="emailAddress"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  /> */}
+                <GridItem style={{ marginTop: 12 }}>
+                  <InputLabel >Quận/Huyện</InputLabel>
+                  <NativeSelect style={{ minWidth: '100%' }} value={country} displayEmpty onChange={handleChange}
+                    input={<BootstrapInput />}
+
+                  >
+                    <option value="" disabled>
+                      Chọn
+                  </option>
+                    <option value={1}>Hồ Chí Minh</option>
+                    <option value={2}>Đà Nẵng</option>
+                    <option value={3}>Hải Phòng</option>
+                  </NativeSelect>
                 </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <FormControl className="form-control">
-                    <InputLabel htmlFor="phone" shrink="true">Số Điện Thoại</InputLabel>
-                    <Input name="phone" id="phone" fullWidth="true"/>
-                  </FormControl>
-                  {/* <CustomInput
-                    labelText="Số Điện Thoại"
-                    id="phone"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  /> */}
+                <GridItem style={{ marginTop: 12 }}>
+                  <InputLabel >Phường/Xã</InputLabel>
+                  <NativeSelect style={{ minWidth: '100%' }} value={country} displayEmpty onChange={handleChange} input={<BootstrapInput />}
+
+                  >
+                    <option value="" disabled>
+                      Chọn
+                  </option>
+                    <option value={1}>Hồ Chí Minh</option>
+                    <option value={2}>Đà Nẵng</option>
+                    <option value={3}>Hải Phòng</option>
+                  </NativeSelect>
                 </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={6}>
-                  <FormControl className="form-control">
-                    <InputLabel htmlFor="name" shrink="true">Họ Tên</InputLabel>
-                    <Input name="name" id="name" fullWidth="true"/>
-                  </FormControl>
-                  {/* <CustomInput
-                    labelText="Họ Tên"
-                    id="name"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  /> */}
+                <GridItem style={{ marginTop: 12, marginBottom: 80 }}>
+                  <InputLabel style={{ marginBottom: 5 }} >Địa chỉ</InputLabel>
+                  <TextField style={{ minWidth: '100%' }}
+                    id="outlined-size-small"
+                    defaultValue=""
+                    variant="outlined"
+                    size="small"
+                  />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={6}>
-                  <FormControl className="form-control">
-                    <InputLabel htmlFor="password" shrink="true">Mật Khẩu</InputLabel>
-                    <Input name="password" id="password" fullWidth="true"/>
-                  </FormControl>
-                  {/* <CustomInput
-                    labelText="Mật Khẩu"
-                    id="password"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  /> */}
+              </GridItem>
+
+            </Panel>
+            <Panel value={index} index={1}>
+              <GridItem xs={12} sm={12}>
+                <GridItem style={{ marginTop: 12 }}>
+                  <InputLabel >Loại nhà đất</InputLabel>
+                  <NativeSelect style={{ minWidth: '100%' }} value={country} displayEmpty onChange={handleChange} input={<BootstrapInput />}
+                  >
+                    <option value="" disabled>
+                      Chọn
+                  </option>
+                    <option value={1}>Hồ Chí Minh</option>
+                    <option value={2}>Đà Nẵng</option>
+                    <option value={3}>Hải Phòng</option>
+                  </NativeSelect>
                 </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
-                  <FormControl className="form-control">
-                    <InputLabel htmlFor="address" shrink="true">Địa Chỉ</InputLabel>
-                    <Input name="address" id="address" fullWidth="true"/>
-                  </FormControl>
-                  {/* <CustomInput
-                    labelText="Địa Chỉ"
-                    id="address"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  /> */}
+                <GridItem style={{ marginTop: 12 }}>
+                  <InputLabel style={{ marginBottom: 5 }} >Số phòng</InputLabel>
+                  <TextField style={{ minWidth: '100%' }}
+                    id="outlined-size-small"
+                    defaultValue=""
+                    variant="outlined"
+                    size="small"
+                  />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <FormControl className="form-control">
-                    <InputLabel htmlFor="role" shrink="true">Chức Vụ</InputLabel>
-                    <Input name="role" id="role" fullWidth="true"/>
-                  </FormControl>
-                  {/* <CustomInput
-                    labelText="Chức Vụ"
-                    id="role"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  /> */}
+                <GridItem style={{ marginTop: 12 }}>
+                  <InputLabel style={{ marginBottom: 5 }} >Số tolet</InputLabel>
+                  <TextField style={{ minWidth: '100%' }}
+                    id="outlined-size-small"
+                    defaultValue=""
+                    variant="outlined"
+                    size="small"
+                  />
                 </GridItem>
-              </GridContainer>
-            </CardBody>
+                <GridItem style={{ marginTop: 12 }}>
+                  <InputLabel style={{ marginBottom: 3 }} >Diện tích</InputLabel>
+                  <TextField style={{ minWidth: '100%' }}
+                    id="outlined-size-small"
+                    defaultValue=""
+                    variant="outlined"
+                    size="small"
+                  />
+                </GridItem>
+                <GridItem style={{ marginTop: 12, marginBottom: 20 }}>
+                  <InputLabel style={{ marginBottom: 3 }} >Giá bán</InputLabel>
+                  <TextField style={{ minWidth: '100%' }}
+                    id="outlined-size-small"
+                    defaultValue=""
+                    variant="outlined"
+                    size="small"
+                  />
+                </GridItem>
+              </GridItem>
+            </Panel>
           </Card>
+
         </GridItem>
-        <GridItem xs={12} sm={12} md={6}>
+        <GridItem xs={12} sm={8}>
+          <TextField style={{ minWidth: '100%', marginBottom: 11, marginTop: 30 }} id="outlined-basic" label="Tiêu đề bài viết" variant="outlined" />
+          <TextareaAutosize
+            rows={24}
+            cols={108}
+            aria-label="maximum height"
+            placeholder="Mô tả chi tiết"
+          />
+        </GridItem>
+      </GridContainer>
+      <GridContainer>
+
+        <GridItem xs={12} sm={4} style={{ marginTop: -30 }}>
           <Card>
-            <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Realestate Banner</h4>
-            </CardHeader>
             <CardBody>
-              <GridItem xs={12} sm={12} md={12}>
+              <GridItem xs={12} sm={6}>
                 <Button variant="contained" component="label">
-                  Thêm Banner
+                  Ảnh Banner
                   <input type="file" hidden />
                 </Button>
-                <GridContainer>
+                {/* <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
-                    <img className="banner" src={ banner } alt=""></img>
+                    <img className="banner" src={banner} alt=""></img>
                   </GridItem>
-                </GridContainer>
+                </GridContainer> */}
               </GridItem>
             </CardBody>
           </Card>
         </GridItem>
 
-        <GridItem xs={12} sm={12} md={12}>
-        <Card className={classes.cardMargin}>
-            <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Realestate Images</h4>
-            </CardHeader>
+        <GridItem xs={12} sm={8} style={{}}>
+          <Card className={classes.cardMargin}>
             <CardBody>
-              <GridItem xs={12} sm={12} md={12}>
+              <GridItem xs={12} sm={12}>
                 <Button variant="contained" component="label">
-                  Thêm Hình
+                  Ảnh Chi Tiết
                   <input type="file" hidden />
                 </Button>
-                <GridContainer >
-                  <GridItem xs={3} sm={3} md={3}>
-                    <Image className="imgUrl" src={ banner } />
+                <GridContainer>
+                  <GridItem xs={4}>
+                    <Image className="imgUrl" src={banner} />
                   </GridItem>
-                  <GridItem xs={3} sm={3} md={3}>
-                    <Image className="imgUrl" src={ banner } />
+                  <GridItem xs={4} >
+                    <Image className="imgUrl" src={banner} />
                   </GridItem>
-                  <GridItem xs={3} sm={3} md={3}>
-                    <Image className="imgUrl" src={ banner } />
+                  <GridItem xs={4}>
+                    <Image className="imgUrl" src={banner} />
                   </GridItem>
-                  <GridItem xs={3} sm={3} md={3}>
-                    <Image className="imgUrl" src={ banner } />
+                  <GridItem xs={4}>
+                    <Image className="imgUrl" src={banner} />
                   </GridItem>
-                  <GridItem xs={3} sm={3} md={3}>
-                    <Image className="imgUrl" src={ banner } />
+                  <GridItem xs={4} >
+                    <Image className="imgUrl" src={banner} />
                   </GridItem>
-                  <GridItem xs={3} sm={3} md={3}>
-                    <Image className="imgUrl" src={ banner } />
-                  </GridItem>
-                  <GridItem xs={3} sm={3} md={3}>
-                    <Image className="imgUrl" src={ banner } />
-                  </GridItem>
-                  <GridItem xs={3} sm={3} md={3}>
-                    <Image className="imgUrl" src={ banner } />
+                  <GridItem xs={4}>
+                    <Image className="imgUrl" src={banner} />
                   </GridItem>
                 </GridContainer>
               </GridItem>
@@ -223,11 +303,11 @@ export default function UserProfile() {
           </Card>
           <GridContainer container justify="flex-end">
             <GridItem>
-              <Button color="primary">Update Profile</Button>
+              <Button color="primary">Thêm Nhà</Button>
             </GridItem>
           </GridContainer>
         </GridItem>
       </GridContainer>
-    </div>
+    </div >
   );
 }

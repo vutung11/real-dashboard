@@ -69,8 +69,8 @@ const dashboards = [
     hidden: true,
   },
   {
-    path: "/add",
-    name: "Real Add",
+    path: "/addproduct",
+    name: "Đăng bài",
     layout: "/admin",
     component: AddReal,
     icon: "",
