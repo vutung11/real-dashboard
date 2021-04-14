@@ -20,6 +20,7 @@ import mapboxgl from "mapbox-gl/dist/mapbox-gl-csp";
 import MapboxWorker from "worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker"; // Load worker code separately with worker-loader
 import { API_KEY } from "../../shared/_constant";
 import { API_KEY_IMG } from "../../shared/_constant";
+import { Typography } from "@material-ui/core";
 
 mapboxgl.workerClass = MapboxWorker; // Wire up loaded worker to be used instead of the default
 mapboxgl.accessToken = MAP_BOX_API;
@@ -109,9 +110,6 @@ const RealDetail = (props) => {
         </Card>
         <Grid container spacing={3} item />
         <Card className={classes.cardMargin}>
-          <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Banner</h4>
-          </CardHeader>
           <CardBody>
             <Grid item xs={12}>
               <img
@@ -119,6 +117,7 @@ const RealDetail = (props) => {
                 src={realData.nha ? API_KEY_IMG + realData.nha.banner : ""}
               ></img>
             </Grid>
+            <Grid></Grid>
           </CardBody>
         </Card>
         {/* <Grid item xs={6}>
