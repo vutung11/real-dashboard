@@ -8,10 +8,12 @@ import { API_KEY } from "../../shared/_constant";
 import { API_KEY_IMG } from "../../shared/_constant";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from '@material-ui/core/Button';
-import VisibilityIcon from '@material-ui/icons/Visibility';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { Link } from "react-router-dom";
 
 TableList.propTypes = {
-    
+
 };
 
 const styles = {
@@ -33,22 +35,48 @@ function TableList(props) {
     const [realData, setRealData] = useState([]);
     useEffect(() => {
         const fetchApi = async () => {
-          try {
-            const data = await axios.get(`${API_KEY}/khach_hang`)
-            setRealData(data.data)
-            console.log(data.data);
-          } catch(e) {
-            console.log(e)
-          }
+            try {
+                const data = await axios.get(`${API_KEY}/khach_hang`)
+                setRealData(data.data)
+                console.log(data.data);
+            } catch (e) {
+                console.log(e)
+            }
         }
-  
+
         fetchApi()
-      }, [])
+    }, [])
     const [checked, setChecked] = React.useState(true);
 
     const handleChange = (event) => {
         setChecked(event.target.checked);
     };
+
+    // const handleDeleteUser = (dataReal) => {
+    //     console.log(dataReal);
+    //     const index = realData.findIndex(x => x.id === dataReal.id)
+    //     // const newID = value.id
+    //     // console.log(newID);
+    // };
+
+    const handleDeleteUser = (e) => {
+        const id = e.target.getAttribute("name");
+        if (id) {
+            if (window.confirm("Bạn có muốn xóa user này?")) {
+                setRealData(realData.filter(value => value.id != id));
+
+                axios.delete(API_KEY + '/khach_hang/' + id)
+                    .then(res => {
+                        console.log(res);
+                    })
+            }
+        }
+
+        // const index = realData.findIndex(x => x.id === newID);
+        // if (index < 0) return;
+        // console.log(index);
+    };
+
     return (
         <div>
             <GridContainer container>
@@ -68,7 +96,7 @@ function TableList(props) {
                     <b className={classes.overFlow}>Avatar</b>
                 </GridItem>
                 <GridItem xs={2} sm={2} md={2}>
-                    
+
                 </GridItem>
             </GridContainer>
             {/* <GridContainer>
@@ -91,10 +119,11 @@ function TableList(props) {
                         <p className={classes.overFlow}>{value.dia_chi}</p>
                     </GridItem>
                     <GridItem xs={1} sm={1} md={1}>
-                        <p className={classes.overFlow}><img className={classes.imgUrl} src={API_KEY_IMG+value.avatar}/></p>
+                        <p className={classes.overFlow}><img className={classes.imgUrl} src={API_KEY_IMG + value.avatar} /></p>
                     </GridItem>
                     <GridItem xs={2} sm={2} md={2}>
-                        <Button><VisibilityIcon/> </Button>
+                        <Link to="user/:id"><Button variant="contained" color="primary"><EditIcon /></Button></Link>
+                        <Button name={value.id} onClick={handleDeleteUser}><DeleteIcon /></Button>
                     </GridItem>
                 </GridContainer>
             ))}
