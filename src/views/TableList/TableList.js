@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 TableList.propTypes = {
 
@@ -77,6 +78,11 @@ function TableList(props) {
         // console.log(index);
     };
 
+    let history = useHistory();
+    const handleUpdateClick = (value) => {
+        history.push("/admin/user/" + value.id);
+    };
+
     return (
         <div>
             <GridContainer container>
@@ -122,7 +128,7 @@ function TableList(props) {
                         <p className={classes.overFlow}><img className={classes.imgUrl} src={API_KEY_IMG + value.avatar} /></p>
                     </GridItem>
                     <GridItem xs={2} sm={2} md={2}>
-                        <Link to="user/:id"><Button variant="contained" color="primary"><EditIcon /></Button></Link>
+                        <Button variant="contained" color="primary" onClick={() => handleUpdateClick(value)}><EditIcon /></Button>
                         <Button name={value.id} onClick={handleDeleteUser}><DeleteIcon /></Button>
                     </GridItem>
                 </GridContainer>
