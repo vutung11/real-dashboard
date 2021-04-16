@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // @material-ui/core components
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -30,6 +30,7 @@ import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import "./styles.css";
 import { FormControl } from "@material-ui/core";
 import { setConstantValue } from "typescript";
+import axios from "axios";
 
 const styles = {
   cardCategoryWhite: {
@@ -101,7 +102,60 @@ export default function UserProfile() {
   const [index, setIndex] = useState(0);
   const [country, setCountry] = React.useState("");
   const [val, setVal] = React.useState({});
-  const [valInput, setValInput] = useState("");
+  const [fileBanner, setFilerBanner] = useState("");
+  const [listImages, setListImages] = useState([]);
+  const [valInput, setValInput] = useState({
+    thanhpho: "",
+    quanhuyen: "",
+    phuongxa: "",
+    duong: "",
+    diachi: "",
+    loainha: "",
+    sophong: "",
+    sotoilet: "",
+    dientich: "",
+    gia: "",
+    chitiet: "",
+  });
+  const [listThanhPho, setListThanhPho] = useState([]);
+  const [listQuanHuyen, setListQuanHuyen] = useState([]);
+  const [listPhuongXa, setListPhuongXa] = useState([]);
+  const [listDuong, setListDuong] = useState([]);
+  const fetchDataListThanhPho = async () => {
+    const res = await axios.get("http://9f8839f807fb.ngrok.io/api/dia_chi");
+    setListThanhPho(res.data.thanh_pho);
+  };
+  const fetchDataListQuanHuyen = async () => {
+    const res = await axios.get(
+      `http://9f8839f807fb.ngrok.io/api/dia_chi/${valInput.thanhpho}`
+    );
+    setListQuanHuyen(res.data.quan);
+  };
+  const fetchDataListPhuongXa = async () => {
+    const res = await axios.get(
+      `http://9f8839f807fb.ngrok.io/api/dia_chi/${valInput.thanhpho}/${valInput.quanhuyen}`
+    );
+    setListPhuongXa(res.data.phuong);
+  };
+  const fetchDataListDuong = async () => {
+  const res = await axios.get(
+    `http://9f8839f807fb.ngrok.io/api/dia_chi/${valInput.thanhpho}/${valInput.quanhuyen}`
+  );
+  setListDuong(res.data.duong);
+};
+
+
+  useEffect(() => {
+    fetchDataListThanhPho();
+  }, []);
+  useEffect(() => {
+    fetchDataListQuanHuyen();
+  }, [valInput.thanhpho]);
+  useEffect(() => {
+    fetchDataListPhuongXa();
+    fetchDataListDuong();
+  }, [valInput.quanhuyen]);
+
   const onTabClick = (e, index) => {
     setIndex(index);
   };
@@ -115,13 +169,61 @@ export default function UserProfile() {
   };
 
   const onChangeInput = (e) => {
-    console.log({ [e.target.name]: e.target.value });
+    console.log("dmm");
+    let name = e.target.name;
+    let value = e.target.value;
+    setValInput((preState) => {
+      return {
+        ...preState,
+        [name]: value,
+      };
+    });
   };
   const onFinish = (e) => {
     e.preventDefault();
+    console.log(valInput);
+    const postData = {
+      id_khach_hang: 15,
+      hinh_thuc: 1,
+      loai_nha: 1,
+      lat: 1,
+      lon: 2,
+      gia: valInput.gia,
+      dien_tich: valInput.dientich,
+      so_phong: valInput.sophong,
+      so_toilet: valInput.sotoilet,
+      banner: fileBanner,
+      mo_ta: valInput.chitiet,
+      thanh_pho: valInput.thanhpho,
+      quan: valInput.quanhuyen,
+      phuong: valInput.phuongxa,
+      duong: 2,
+      so_nha: 2,
+      trang_thai: 1,
+      duyet: 1,
+    };
+    var form_data = new FormData();
 
-    console.log(e.target.value);
+    for (var key in postData) {
+      form_data.append(key, postData[key]);
+    }
+    axios.post("http://9f8839f807fb.ngrok.io/api/nha", form_data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   };
+
+  const uploadBanner = async (e) => {
+    const file = e.target.files[0];
+    setFilerBanner(file);
+    console.log(URL.createObjectURL(file));
+  };
+  const uploadList = async (e) => {
+    const file = e.target.files[0];
+    setListImages([...listImages, file]);
+  };
+
   return (
     <div>
       <GridContainer>
@@ -145,65 +247,88 @@ export default function UserProfile() {
                   <InputLabel>Tỉnh/Thành Phố</InputLabel>
                   <NativeSelect
                     style={{ minWidth: "100%" }}
-                    value={country}
                     displayEmpty
-                    onChange={handleChange}
+                    onChange={(e) => onChangeInput(e)}
+                    value={valInput.thanhpho}
                     input={<BootstrapInput />}
                     name="thanhpho"
                   >
                     <option value="" disabled>
                       Chọn
                     </option>
-                    <option value={1}>Hồ Chí Minh</option>
-                    <option value={2}>Đà Nẵng</option>
-                    <option value={3}>Hải Phòng</option>
+                    {listThanhPho.map((e, index) => {
+                      return <option value={e.id}>{e._name}</option>;
+                    })}
                   </NativeSelect>
                 </GridItem>
                 <GridItem style={{ marginTop: 12 }}>
                   <InputLabel>Quận/Huyện</InputLabel>
                   <NativeSelect
                     style={{ minWidth: "100%" }}
-                    value={country}
                     displayEmpty
-                    onChange={handleChange}
+                    onChange={onChangeInput}
+                    value={valInput.quanhuyen}
                     input={<BootstrapInput />}
                     name="quanhuyen"
                   >
                     <option value="" disabled>
                       Chọn
                     </option>
-                    <option value={1}>Hồ Chí Minh</option>
-                    <option value={2}>Đà Nẵng</option>
-                    <option value={3}>Hải Phòng</option>
+                    {listQuanHuyen &&
+                      listQuanHuyen.map((e, index) => {
+                        return <option value={e.id}>{e._name}</option>;
+                      })}
                   </NativeSelect>
                 </GridItem>
                 <GridItem style={{ marginTop: 12 }}>
                   <InputLabel>Phường/Xã</InputLabel>
                   <NativeSelect
                     style={{ minWidth: "100%" }}
-                    value={country}
                     displayEmpty
-                    onChange={handleChange}
+                    onChange={onChangeInput}
+                    value={valInput.phuongxa}
                     input={<BootstrapInput />}
                     name="phuongxa"
                   >
                     <option value="" disabled>
                       Chọn
                     </option>
-                    <option value={1}>Hồ Chí Minh</option>
-                    <option value={2}>Đà Nẵng</option>
-                    <option value={3}>Hải Phòng</option>
+                    {listPhuongXa &&
+                      listPhuongXa.map((e, index) => {
+                        return <option value={e.id}>{e._name}</option>;
+                      })}
                   </NativeSelect>
                 </GridItem>
+                <GridItem style={{ marginTop: 12 }}>
+                  <InputLabel>Đường</InputLabel>
+                  <NativeSelect
+                    style={{ minWidth: "100%" }}
+                    displayEmpty
+                    onChange={onChangeInput}
+                    value={valInput.duong}
+                    input={<BootstrapInput />}
+                    name="duong"
+                  >
+                    <option value="" disabled>
+                      Chọn
+                    </option>
+                    {listPhuongXa &&
+                      listPhuongXa.map((e, index) => {
+                        return <option value={e.id}>{e._name}</option>;
+                      })}
+                  </NativeSelect>
+                </GridItem>
+                ;
                 <GridItem style={{ marginTop: 12, marginBottom: 80 }}>
                   <InputLabel style={{ marginBottom: 5 }}>Địa chỉ</InputLabel>
                   <TextField
                     style={{ minWidth: "100%" }}
                     id="outlined-size-small"
-                    defaultValue=""
                     variant="outlined"
                     size="small"
                     name="diachi"
+                    onChange={onChangeInput}
+                    value={valInput.diachi}
                   />
                 </GridItem>
               </GridItem>
@@ -214,9 +339,9 @@ export default function UserProfile() {
                   <InputLabel>Loại nhà đất</InputLabel>
                   <NativeSelect
                     style={{ minWidth: "100%" }}
-                    value={country}
                     displayEmpty
-                    onChange={handleChange}
+                    onChange={onChangeInput}
+                    value={valInput.loainha}
                     input={<BootstrapInput />}
                     name="loainha"
                   >
@@ -233,17 +358,11 @@ export default function UserProfile() {
                   <TextField
                     style={{ minWidth: "100%" }}
                     id="outlined-size-small"
-                    defaultValue=""
                     variant="outlined"
                     size="small"
                     name="sophong"
-                  />
-                  <input
-                    type="number"
-                    name="number"
-                    id=""
-                    value={valInput}
                     onChange={onChangeInput}
+                    value={valInput.sophong}
                   />
                 </GridItem>
                 <GridItem style={{ marginTop: 12 }}>
@@ -251,10 +370,11 @@ export default function UserProfile() {
                   <TextField
                     style={{ minWidth: "100%" }}
                     id="outlined-size-small"
-                    defaultValue=""
                     variant="outlined"
                     size="small"
-                    name="sotolet"
+                    name="sotoilet"
+                    onChange={onChangeInput}
+                    value={valInput.sotoilet}
                   />
                 </GridItem>
                 <GridItem style={{ marginTop: 12 }}>
@@ -262,10 +382,11 @@ export default function UserProfile() {
                   <TextField
                     style={{ minWidth: "100%" }}
                     id="outlined-size-small"
-                    defaultValue=""
                     variant="outlined"
                     size="small"
                     name="dientich"
+                    onChange={onChangeInput}
+                    value={valInput.dientich}
                   />
                 </GridItem>
                 <GridItem style={{ marginTop: 12, marginBottom: 20 }}>
@@ -273,10 +394,11 @@ export default function UserProfile() {
                   <TextField
                     style={{ minWidth: "100%" }}
                     id="outlined-size-small"
-                    defaultValue=""
                     variant="outlined"
                     size="small"
                     name="gia"
+                    onChange={onChangeInput}
+                    value={valInput.gia}
                   />
                 </GridItem>
               </GridItem>
@@ -291,6 +413,8 @@ export default function UserProfile() {
             aria-label="maximum height"
             placeholder="Mô tả chi tiết"
             name="chitiet"
+            onChange={onChangeInput}
+            value={valInput.chitiet}
           />
         </GridItem>
       </GridContainer>
@@ -302,13 +426,17 @@ export default function UserProfile() {
               <GridItem xs={12} sm={6}>
                 <Button variant="contained" component="label">
                   Ảnh Banner
-                  <input type="file" hidden />
+                  <input type="file" hidden onChange={uploadBanner} />
                 </Button>
-                {/* <GridContainer>
+                <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
-                    <img className="banner" src={banner} alt=""></img>
+                    <img
+                      className="banner"
+                      src={fileBanner ? URL.createObjectURL(fileBanner) : ""}
+                      alt=""
+                    ></img>
                   </GridItem>
-                </GridContainer> */}
+                </GridContainer>
               </GridItem>
             </CardBody>
           </Card>
@@ -320,10 +448,27 @@ export default function UserProfile() {
               <GridItem xs={12} sm={12}>
                 <Button variant="contained" component="label">
                   Ảnh Chi Tiết
-                  <input type="file" hidden />
+                  <input
+                    type="file"
+                    hidden
+                    onChange={(e) => {
+                      console.log(typeof listImages);
+                      uploadList(e);
+                    }}
+                  />
                 </Button>
                 <GridContainer>
-                  <GridItem xs={4}>
+                  {listImages.map((e) => {
+                    return (
+                      <GridItem xs={4}>
+                        <Image
+                          className="imgUrl"
+                          src={URL.createObjectURL(e)}
+                        />
+                      </GridItem>
+                    );
+                  })}
+                  {/* <GridItem xs={4}>
                     <Image className="imgUrl" src={banner} />
                   </GridItem>
                   <GridItem xs={4}>
@@ -340,14 +485,14 @@ export default function UserProfile() {
                   </GridItem>
                   <GridItem xs={4}>
                     <Image className="imgUrl" src={banner} />
-                  </GridItem>
+                  </GridItem> */}
                 </GridContainer>
               </GridItem>
             </CardBody>
           </Card>
           <GridContainer container justify="flex-end">
             <GridItem>
-              <Button color="primary" type="submit">
+              <Button color="primary" type="submit" onClick={onFinish}>
                 Thêm Nhà
               </Button>
             </GridItem>

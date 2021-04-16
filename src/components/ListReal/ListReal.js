@@ -31,6 +31,7 @@ export default function SpacingGrid() {
   const classes = useStyles();
   const [realData, setRealData] = useState([]);
   const [filterData, setFilterData] = useState([]);
+  const [isDeleteItem, setIsDeleteItem] = useState(false);
   const apiUrl = API_KEY;
   const typingRacing = useRef(null);
   useEffect(() => {
@@ -44,7 +45,7 @@ export default function SpacingGrid() {
       }
     };
     fetchData();
-  }, []);
+  }, [isDeleteItem]);
   const handleChange = (event) => {
     setSpacing(Number(event.target.value));
   };
@@ -70,6 +71,7 @@ export default function SpacingGrid() {
       }
     }, 300);
   };
+  const handleDelete = (id) => {};
 
   return (
     <React.Fragment>
@@ -100,7 +102,7 @@ export default function SpacingGrid() {
         {filterData.map((value) => (
           <Grid xs={3} key={value.id_nha} item>
             {/* <Paper className={classes.paper} /> */}
-            <Real item={value} />
+            <Real item={value} setIsDelete = {()=>setIsDeleteItem(!isDeleteItem)} />
           </Grid>
         ))}
       </Grid>

@@ -32,6 +32,7 @@ import {
   RadioButtonCheckedOutlined,
 } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 const useStyles = makeStyles({
   root: {
@@ -46,7 +47,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function MediaCard({ item }) {
+export default function MediaCard({ item, setIsDelete }) {
   let history = useHistory();
 
   const classes = useStyles();
@@ -54,7 +55,10 @@ export default function MediaCard({ item }) {
   const handleRealClick = (item) => {
     history.push("/admin/home/" + item.id_nha);
   };
-
+  const handleDelete = async (id) => {
+    await axios.delete(`${API_KEY}/nha/${id}`);
+    setIsDelete();
+  }
   return (
     // <Container className={classes.root}>
     //   <Gird container>
@@ -115,7 +119,11 @@ export default function MediaCard({ item }) {
         <IconButton size="small" color="primary">
           <FindInPageOutlined />
         </IconButton>
-        <IconButton size="small" aria-label="delete">
+        <IconButton
+          size="small"
+          aria-label="delete"
+          onClick={() => handleDelete(item.id_nha)}
+        >
           <Delete />
         </IconButton>
       </CardActions>
