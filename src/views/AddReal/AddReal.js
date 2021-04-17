@@ -122,28 +122,27 @@ export default function UserProfile() {
   const [listPhuongXa, setListPhuongXa] = useState([]);
   const [listDuong, setListDuong] = useState([]);
   const fetchDataListThanhPho = async () => {
-    const res = await axios.get("http://9f8839f807fb.ngrok.io/api/dia_chi");
+    const res = await axios.get("http://127.0.0.1:8000/api/dia_chi");
     setListThanhPho(res.data.thanh_pho);
   };
   const fetchDataListQuanHuyen = async () => {
     const res = await axios.get(
-      `http://9f8839f807fb.ngrok.io/api/dia_chi/${valInput.thanhpho}`
+      `http://127.0.0.1:8000/api/dia_chi/${valInput.thanhpho}`
     );
     setListQuanHuyen(res.data.quan);
   };
   const fetchDataListPhuongXa = async () => {
     const res = await axios.get(
-      `http://9f8839f807fb.ngrok.io/api/dia_chi/${valInput.thanhpho}/${valInput.quanhuyen}`
+      `http://127.0.0.1:8000/api/dia_chi/${valInput.thanhpho}/${valInput.quanhuyen}`
     );
     setListPhuongXa(res.data.phuong);
   };
   const fetchDataListDuong = async () => {
-  const res = await axios.get(
-    `http://9f8839f807fb.ngrok.io/api/dia_chi/${valInput.thanhpho}/${valInput.quanhuyen}`
-  );
-  setListDuong(res.data.duong);
-};
-
+    const res = await axios.get(
+      `http://127.0.0.1:8000/api/dia_chi/${valInput.thanhpho}/${valInput.quanhuyen}`
+    );
+    setListDuong(res.data.duong);
+  };
 
   useEffect(() => {
     fetchDataListThanhPho();
@@ -207,7 +206,7 @@ export default function UserProfile() {
     for (var key in postData) {
       form_data.append(key, postData[key]);
     }
-    axios.post("http://9f8839f807fb.ngrok.io/api/nha", form_data, {
+    axios.post("http://127.0.0.1:8000/api/nha", form_data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -220,8 +219,11 @@ export default function UserProfile() {
     console.log(URL.createObjectURL(file));
   };
   const uploadList = async (e) => {
-    const file = e.target.files[0];
-    setListImages([...listImages, file]);
+    console.log(e.target.files);
+    const file = e.target.files;
+    // console.log(URL.createObjectURL(file));
+    console.log(file[0], file, "1111111111");
+    setListImages([...listImages, ...file]);
   };
 
   return (
@@ -312,13 +314,12 @@ export default function UserProfile() {
                     <option value="" disabled>
                       Chọn
                     </option>
-                    {listPhuongXa &&
-                      listPhuongXa.map((e, index) => {
+                    {listDuong &&
+                      listDuong.map((e, index) => {
                         return <option value={e.id}>{e._name}</option>;
                       })}
                   </NativeSelect>
                 </GridItem>
-                ;
                 <GridItem style={{ marginTop: 12, marginBottom: 80 }}>
                   <InputLabel style={{ marginBottom: 5 }}>Địa chỉ</InputLabel>
                   <TextField
@@ -335,7 +336,7 @@ export default function UserProfile() {
             </Panel>
             <Panel value={index} index={1}>
               <GridItem xs={12} sm={12}>
-                <GridItem style={{ marginTop: 12 }}>
+                {/* <GridItem style={{ marginTop: 12 }}>
                   <InputLabel>Loại nhà đất</InputLabel>
                   <NativeSelect
                     style={{ minWidth: "100%" }}
@@ -352,7 +353,7 @@ export default function UserProfile() {
                     <option value={2}>Đà Nẵng</option>
                     <option value={3}>Hải Phòng</option>
                   </NativeSelect>
-                </GridItem>
+                </GridItem> */}
                 <GridItem style={{ marginTop: 12 }}>
                   <InputLabel style={{ marginBottom: 5 }}>Số phòng</InputLabel>
                   <TextField
@@ -450,7 +451,9 @@ export default function UserProfile() {
                   Ảnh Chi Tiết
                   <input
                     type="file"
+                    name="images[]"
                     hidden
+                    multiple
                     onChange={(e) => {
                       console.log(typeof listImages);
                       uploadList(e);
@@ -491,6 +494,16 @@ export default function UserProfile() {
             </CardBody>
           </Card>
           <GridContainer container justify="flex-end">
+            <GridItem>
+              <Button color="secondary" type="submit" onClick={onFinish}>
+                Quay Lại
+              </Button>
+            </GridItem>
+            <GridItem>
+              <Button color="primary" type="submit" onClick={onFinish}>
+                Duyệt Nhà
+              </Button>
+            </GridItem>
             <GridItem>
               <Button color="primary" type="submit" onClick={onFinish}>
                 Thêm Nhà

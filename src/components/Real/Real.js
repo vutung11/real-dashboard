@@ -42,8 +42,8 @@ const useStyles = makeStyles({
     height: 140,
   },
   imgUrl: {
-    width: "100%",
-    height: "100%",
+    maxWidth: "100%",
+    maxHeight: "220px",
   },
 });
 
@@ -58,7 +58,7 @@ export default function MediaCard({ item, setIsDelete }) {
   const handleDelete = async (id) => {
     await axios.delete(`${API_KEY}/nha/${id}`);
     setIsDelete();
-  }
+  };
   return (
     // <Container className={classes.root}>
     //   <Gird container>
@@ -104,14 +104,23 @@ export default function MediaCard({ item, setIsDelete }) {
           src={API_KEY_IMG + item.banner}
         />
         <CardContent>
-          <Typography gutterBottom variant="body2" component="p">
-            Cần bán nhà 2 mặt tiền quận 2nhà 2 mặt tiền quậ
+          <Typography gutterBottom variant="body2" component="h2">
+            {"Số :  " +
+              item.so_nha +
+              " Đường " +
+              item.duong +
+              ", Phường " +
+              item.phuong +
+              ", " +
+              item.quan +
+              ", Thành Phố " +
+              item.thanh_pho}
           </Typography>
-          <Typography variant="h4" component="h2">
-            {item.gia}
+          <Typography variant="h6" component="h2">
+            {item.gia + " tỷ"}
           </Typography>
           <Typography variant="h5" component="h2">
-            {item.dien_tich + "/" + item.loai_nha + "/" + item.hinh_thuc}
+            {item.dien_tich + "m2 / " + item.hinh_thuc}
           </Typography>
         </CardContent>
       </CardActionArea>
