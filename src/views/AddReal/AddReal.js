@@ -200,12 +200,19 @@ export default function UserProfile() {
       so_nha: 2,
       trang_thai: 1,
       duyet: 1,
+      // images: listImages,
     };
     var form_data = new FormData();
 
     for (var key in postData) {
       form_data.append(key, postData[key]);
+      console.log(form_data);
     }
+    for (const file of listImages) {
+      form_data.append("images[]", file);
+    }
+    console.log(form_data.getAll("images[]"), "form_data");
+    // console.log(postData);
     axios.post("http://127.0.0.1:8000/api/nha", form_data, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -222,7 +229,7 @@ export default function UserProfile() {
     console.log(e.target.files);
     const file = e.target.files;
     // console.log(URL.createObjectURL(file));
-    console.log(file[0], file, "1111111111");
+    console.log(file[0], file);
     setListImages([...listImages, ...file]);
   };
 
