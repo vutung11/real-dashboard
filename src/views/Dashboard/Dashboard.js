@@ -98,7 +98,7 @@ export default function Dashboard() {
               <CardIcon color="warning">
                 <Icon>content_copy</Icon>
               </CardIcon>
-              <p className={classes.cardCategory}>Used Space</p>
+              <p className={classes.cardCategory}>Quận Nhiều Nhà</p>
               <h3 className={classes.cardTitle}>
                 {NhieuNhaNhat.map((value) => (
                   <div key={value.tong_nha}>
