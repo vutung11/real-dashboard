@@ -49,6 +49,11 @@ const useStyles = makeStyles((theme) => ({
 export default function UserProfile() {
   const classes = useStyles();
   const [value, setValue] = React.useState();
+  const [email, setEmail] = React.useState();
+  const [phone, setPhone] = React.useState();
+  const [name, setName] = React.useState();
+  const [address, setAddress] = React.useState();
+  const [imgUrl, setImgUrl] = React.useState();
   const [user, setUser] = useState({})
   const { id } = useParams();
   useEffect(() => {
@@ -59,6 +64,11 @@ export default function UserProfile() {
       const data = await axios.get(`${API_KEY}/khach_hang/${id}`)
       setUser(data.data)
       setValue(data.data.chuc_vu)
+      setEmail(data.data.email)
+      setPhone(data.data.sdt)
+      setName(data.data.ho_ten)
+      setAddress(data.data.dia_chi)
+      setAddress(data.data.hinh)
       console.log(data, 'data')
       localStorage.setItem('auth', JSON.stringify(data.data))
       console.log(user, 'user')
@@ -79,10 +89,36 @@ export default function UserProfile() {
     setValue(event.target.value);
   };
 
+  const handleEmailChange = (event) => {
+    console.log(event)
+    setEmail(event.target.value);
+  };
+
+  const handlePhoneChange = (event) => {
+    setPhone(event.target.value);
+  };
+
+  const handleNameChange = (event) => {
+    setName(event.target.value);
+  };
+
+  const handleAddressChange = (event) => {
+    setAddress(event.target.value);
+  };
+
+  const handleImgUrlChange = (event) => {
+    setImgUrl(event.target.value);
+  };
+
   const handleUpdateClick = (e) => {
     const id = e.target.getAttribute("name");
     if (id) {
       axios.put(API_KEY + '/khach_hang/' + id, {
+        email: email,
+        sdt: phone,
+        ho_ten: name,
+        dia_chi: address,
+        hinh: imgUrl,
         chuc_vu: value,
       })
         .then(res => {
@@ -91,6 +127,62 @@ export default function UserProfile() {
     }
   };
 
+  const roleName = () => {
+    switch (user.chuc_vu) {
+      case 0:
+        return "Banned"
+        break;
+
+      case 1:
+        return "Người Dùng"
+        break;
+
+      case 2:
+        return "Quản Trị Viên"
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  const disableRole = () => {
+    switch (user.chuc_vu) {
+
+      case 1:
+        return false
+        break;
+
+      case 2:
+        return true
+        break;
+
+      default:
+        return true
+        break;
+    }
+  }
+
+  const setDisableRole = () => {
+    switch (user.chuc_vu) {
+      case 2:
+        return <GridItem xs={12} sm={12} md={4}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Chức Vụ</FormLabel>
+            <RadioGroup aria-label="gender" name="chuc_vu" value={value} onChange={handleRoleChange}>
+              <FormControlLabel value="0" checked={value == 0 ? true : false} control={<Radio />} label="Banned" />
+              <FormControlLabel value="1" checked={value == 1 ? true : false} control={<Radio />} label="Người Dùng" />
+              <FormControlLabel value="2" checked={value == 2 ? true : false} control={<Radio />} label="Quản Trị Viên" />
+            </RadioGroup>
+          </FormControl>
+        </GridItem>
+        break;
+
+      default:
+        break;
+    }
+  }
+
   return (
     <div>
       <GridContainer>
@@ -98,8 +190,8 @@ export default function UserProfile() {
         <GridItem xs={12} sm={12} md={8}>
           <Card>
             <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Edit Profile</h4>
-              <p className={classes.cardCategoryWhite}>Complete your profile</p>
+              <h4 className={classes.cardTitleWhite}>Chỉnh sửa thông tin</h4>
+              {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
             </CardHeader>
             <CardBody>
               <GridContainer>
@@ -107,7 +199,7 @@ export default function UserProfile() {
                   <FormControl className="form-control">
                     <InputLabel htmlFor="idUser" shrink="true">Mã Khách Hàng</InputLabel>
                     <Input
-                      name="idUser"
+                      name="id"
                       id="idUser"
                       disabled="true"
                       fullWidth="true"
@@ -128,11 +220,12 @@ export default function UserProfile() {
                   <FormControl className="form-control">
                     <InputLabel htmlFor="emailAddress" shrink="true">Email Address</InputLabel>
                     <Input
-                      name="emailAddress"
+                      name="email"
                       id="emailAddress"
-                      disabled="true"
+                      disabled={disableRole()}
                       fullWidth="true"
-                      value={user.email} />
+                      value={email}
+                      onChange={handleEmailChange} />
                   </FormControl>
                   {/* <CustomInput
                     labelText="Email Address"
@@ -153,12 +246,12 @@ export default function UserProfile() {
                   <FormControl className="form-control">
                     <InputLabel htmlFor="phone" shrink="true">Số Điện Thoại</InputLabel>
                     <Input
-                      name="phone"
+                      name="sdt"
                       id="phone"
-                      disabled="true"
+                      disabled={disableRole()}
                       fullWidth="true"
-                      value={user.sdt}
-                    />
+                      value={phone}
+                      onChange={handlePhoneChange} />
                   </FormControl>
                   {/* <CustomInput
                     labelText="Số Điện Thoại"
@@ -181,11 +274,12 @@ export default function UserProfile() {
                   <FormControl className="form-control">
                     <InputLabel htmlFor="name" shrink="true">Họ Tên</InputLabel>
                     <Input
-                      name="name"
+                      name="ho_ten"
                       id="name"
-                      disabled="true"
+                      disabled={disableRole()}
                       fullWidth="true"
-                      value={user.ho_ten} />
+                      value={name}
+                      onChange={handleNameChange} />
                   </FormControl>
                   {/* <CustomInput
                     labelText="Họ Tên"
@@ -205,11 +299,12 @@ export default function UserProfile() {
                   <FormControl className="form-control">
                     <InputLabel htmlFor="address" shrink="true">Địa Chỉ</InputLabel>
                     <Input
-                      name="address"
+                      name="dia_chi"
                       id="address"
-                      disabled="true"
+                      disabled={disableRole()}
                       fullWidth="true"
-                      value={user.chuc_vu} />
+                      value={address}
+                      onChange={handleAddressChange} />
                   </FormControl>
                   {/* <CustomInput
                       labelText="Địa Chỉ"
@@ -226,15 +321,7 @@ export default function UserProfile() {
                       }
                   /> */}
                 </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <FormControl component="fieldset">
-                    <FormLabel component="legend">Chức Vụ</FormLabel>
-                    <RadioGroup aria-label="gender" name="chuc_vu" value={value} onChange={handleRoleChange}>
-                      <FormControlLabel value="0" checked={value == 0 ? true : false} control={<Radio />} label="User" />
-                      <FormControlLabel value="1" checked={value == 1 ? true : false} control={<Radio />} label="Admin" />
-                    </RadioGroup>
-                  </FormControl>
-                </GridItem>
+                {setDisableRole()}
               </GridContainer>
               <GridContainer>
                 <Card className={classes.cardMargin}>
@@ -249,14 +336,19 @@ export default function UserProfile() {
                   <CardFooter>
                     <Button variant="contained" component="label">
                       Đổi Avatar
-                    <input type="file" hidden disabled="true" />
+                    <input
+                        type="file"
+                        hidden
+                        disabled={disableRole()}
+                        value={imgUrl}
+                        onChange={handleImgUrlChange} />
                     </Button>
                   </CardFooter>
                 </Card>
               </GridContainer>
             </CardBody>
             <CardFooter>
-              <Button color="primary" name={user.id} onClick={handleUpdateClick}>Update Profile</Button>
+              <Button color="primary" name={user.id} onClick={handleUpdateClick}>Chỉnh Sửa</Button>
             </CardFooter>
           </Card>
         </GridItem>
@@ -264,16 +356,14 @@ export default function UserProfile() {
           <Card profile>
             <CardAvatar profile>
               <a href="#pablo" onClick={e => e.preventDefault()}>
-                <img src={avatar} alt="..." />
+                <img src={API_KEY_IMG + user.avatar} alt="..." />
               </a>
             </CardAvatar>
             <CardBody profile>
-              <h6 className={classes.cardCategory}>CEO / CO-FOUNDER</h6>
-              <h4 className={classes.cardTitle}>Alec Thompson</h4>
+              <h6 className={classes.cardCategory}><b>{roleName()}</b></h6>
+              <h4 className={classes.cardTitle}>{user.ho_ten}</h4>
               <p className={classes.description}>
-                Don{"'"}t be scared of the truth because we need to restart the
-                human foundation in truth And I love you like Kanye loves Kanye
-                I love Rick Owens’ bed design but the back is...
+                {user.dia_chi}
               </p>
             </CardBody>
           </Card>
