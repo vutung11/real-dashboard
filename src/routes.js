@@ -27,6 +27,7 @@ import TableList from "views/TableList/TableList.js";
 import Real from "views/Real/Real.js";
 import RealDetail from "views/RealDetail/RealDetail.js";
 import AddReal from "views/AddReal/AddReal";
+import ViewReal from "views/ViewReal/ViewReal";
 
 const dashboards = [
   {
@@ -38,7 +39,7 @@ const dashboards = [
     layout: "/admin",
   },
   {
-    path: "/user",
+    path: "/user/:id",
     name: "User Profile",
     rtlName: "ملف تعريفي للمستخدم",
     icon: Person,
@@ -69,10 +70,18 @@ const dashboards = [
     hidden: true,
   },
   {
-    path: "/add",
-    name: "Real Add",
+    path: "/addproduct",
+    name: "Đăng bài",
     layout: "/admin",
     component: AddReal,
+    icon: "",
+    hidden: true,
+  },
+  {
+    path: "/viewproduct",
+    name: "Duyệt bài",
+    layout: "/admin",
+    component: ViewReal,
     icon: "",
     hidden: true,
   },

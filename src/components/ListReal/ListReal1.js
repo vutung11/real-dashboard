@@ -13,7 +13,21 @@ import axios from "axios";
 
 import { API_KEY } from "../../shared/_constant";
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    height: 400,
+    width: "100%",
+  },
+  control: {
+    padding: theme.spacing(2),
+  },
+}));
+
 function removeVietnameseTones(str) {
+  console.log(str);
   str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
   str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
   str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
@@ -38,22 +52,12 @@ function removeVietnameseTones(str) {
   str = str.trim();
   // Remove punctuations
   // Bỏ dấu câu, kí tự đặc biệt
-  // str = str.replace(/\s/g, "");
+  str = str.replace(
+    /!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g,
+    " "
+  );
   return str;
 }
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    height: 400,
-    width: "100%",
-  },
-  control: {
-    padding: theme.spacing(2),
-  },
-}));
 
 export default function SpacingGrid() {
   const [spacing, setSpacing] = React.useState(2);
@@ -80,6 +84,7 @@ export default function SpacingGrid() {
   };
   const handleChangeSearch = (e) => {
     const value = e.target.value;
+    console.log(value);
 
     if (typingRacing.current) {
       clearTimeout(typingRacing.current);
@@ -88,11 +93,10 @@ export default function SpacingGrid() {
     typingRacing.current = setTimeout(() => {
       let filter = realData.filter((item) => {
         let itemContent = `${item.thanh_pho}/${item.phuong}/${item.quan}`;
-        itemContent = removeVietnameseTones(itemContent);
-        console.log(itemContent);
         return (
-          itemContent.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !=
-          -1
+          itemContent
+            .toLocaleLowerCase()
+            .indexOf(removeVietnameseTones(value).toLocaleLowerCase()) != -1
         );
       });
       if (value === "") {
