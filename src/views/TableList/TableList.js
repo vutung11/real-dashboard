@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -33,9 +33,28 @@ const styles = {
     }
 }
 
+
 const useStyles = makeStyles(styles);
 
+function TableList(props) {
+  const classes = useStyles();
+  const [realData, setRealData] = useState([]);
+  const typingRacing = useRef(null);
+  const [filterUser, setFilterUser] = useState([]);
+  useEffect(() => {
+    const fetchApi = async () => {
+      try {
+        const data = await axios.get(`${API_KEY}/khach_hang`);
+        setRealData(data.data);
+        setFilterUser(data.data);
+        console.log(data.data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
 
+    fetchApi();
+  }, []);
 
 function TableList(props) {
     const classes = useStyles();
