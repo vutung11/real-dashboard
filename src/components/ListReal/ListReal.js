@@ -38,7 +38,7 @@ function removeVietnameseTones(str) {
   str = str.trim();
   // Remove punctuations
   // Bỏ dấu câu, kí tự đặc biệt
-  str = str.replace(/\s/g, "");
+  // str = str.replace(/\s/g, "");
   return str;
 }
 

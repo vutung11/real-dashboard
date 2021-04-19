@@ -501,7 +501,7 @@ export default function UserProfile() {
             </CardBody>
           </Card>
           <GridContainer container justify="flex-end">
-            <GridItem>
+            {/* <GridItem>
               <Button color="secondary" type="submit" onClick={onFinish}>
                 Quay Lại
               </Button>
@@ -510,7 +510,7 @@ export default function UserProfile() {
               <Button color="primary" type="submit" onClick={onFinish}>
                 Duyệt Nhà
               </Button>
-            </GridItem>
+            </GridItem> */}
             <GridItem>
               <Button color="primary" type="submit" onClick={onFinish}>
                 Thêm Nhà
