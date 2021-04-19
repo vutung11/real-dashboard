@@ -6,6 +6,7 @@ import ChartistGraph from "react-chartist";
 // @material-ui/core
 import { makeStyles } from "@material-ui/core/styles";
 import Icon from "@material-ui/core/Icon";
+import HomeIcon from '@material-ui/icons/Home';
 // @material-ui/icons
 import Store from "@material-ui/icons/Store";
 import Warning from "@material-ui/icons/Warning";
@@ -96,7 +97,7 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="warning" stats icon>
               <CardIcon color="warning">
-                <Icon>content_copy</Icon>
+                <HomeIcon />
               </CardIcon>
               <p className={classes.cardCategory}>Quận Nhiều Nhà</p>
               <h3 className={classes.cardTitle}>
@@ -110,12 +111,8 @@ export default function Dashboard() {
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
-                <Danger>
-                  <Warning />
-                </Danger>
-                <a href="#pablo" onClick={e => e.preventDefault()}>
-                  Get more space
-                </a>
+                <DateRange />
+                Last 24 Hours
               </div>
             </CardFooter>
           </Card>
@@ -124,7 +121,7 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="success" stats icon>
               <CardIcon color="success">
-                <Store />
+                <HomeIcon />
               </CardIcon>
               <p className={classes.cardCategory}>Tổng Nhà Đã Bán</p>
               <h3 className={classes.cardTitle}>{TongDangBan}</h3>
