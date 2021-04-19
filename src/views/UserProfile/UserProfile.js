@@ -330,7 +330,7 @@ export default function UserProfile() {
                   </CardHeader>
                   <CardBody>
                     <Grid item xs={12}>
-                      <img src={API_KEY_IMG + user.hinh}></img>
+                      <img className="imgUrl" src={API_KEY_IMG + user.avatar}></img>
                     </Grid>
                   </CardBody>
                   <CardFooter>
