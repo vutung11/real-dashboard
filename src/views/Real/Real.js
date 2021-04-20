@@ -22,9 +22,7 @@ const Real = (props) => {
     <div>
       <ListReal />
 
-      <div className={classes.root}>
-        <Pagination count={10} className="custom-paginate" />
-      </div>
+
     </div>
   );
 };

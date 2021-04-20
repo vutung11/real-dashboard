@@ -9,6 +9,9 @@ import CustomInput from "components/CustomInput/CustomInput.js";
 import Search from "@material-ui/icons/Search";
 import Select from "@material-ui/core/Select";
 
+
+
+import Pagination from '@material-ui/lab/Pagination';
 import axios from "axios";
 
 import { API_KEY } from "../../shared/_constant";
@@ -54,55 +57,65 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
   },
 }));
+const PagiStyle = makeStyles((theme) => ({
+  root: {
+    "& > *": {
+      marginTop: theme.spacing(10),
+      marginRight: "auto",
+      marginLeft: "auto",
+    },
+  },
+}));
 
 export default function SpacingGrid() {
   const [spacing, setSpacing] = React.useState(2);
   const classes = useStyles();
   const [realData, setRealData] = useState([]);
-  const [filterData, setFilterData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const SearchChange = e => {
+    setSearchTerm(e.target.value);
+  };
   const [isDeleteItem, setIsDeleteItem] = useState(false);
+
+
+  const [currentPage, SetCurrentPage] = useState(1);
+  const [RealPerPage] = useState(4);
+  const IndexLastPost = currentPage * RealPerPage;
+  const IndexFirstPost = IndexLastPost - RealPerPage;
+
+
+  const PaginateStyle = PagiStyle();
   const apiUrl = API_KEY;
+
   const typingRacing = useRef(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await axios.get(`${apiUrl}/nha`);
         setRealData(data.data);
-        setFilterData(data.data);
+        const results = (data.data).filter((item) => {
+          let itemContent = `${item.thanh_pho}/${item.phuong}/${item.quan}`;
+          itemContent = removeVietnameseTones(itemContent);
+          return (
+            itemContent.toLocaleLowerCase().indexOf(searchTerm.toLocaleLowerCase()) !=
+            -1
+          );
+        });
+        setSearchResults(results);
       } catch (error) {
         console.log("Failed to fetch post list:", error.message);
       }
     };
     fetchData();
-  }, [isDeleteItem]);
-  const handleChange = (event) => {
-    setSpacing(Number(event.target.value));
-  };
-  const handleChangeSearch = (e) => {
-    const value = e.target.value;
+  }, [isDeleteItem, searchTerm]);
 
-    if (typingRacing.current) {
-      clearTimeout(typingRacing.current);
-    }
-
-    typingRacing.current = setTimeout(() => {
-      let filter = realData.filter((item) => {
-        let itemContent = `${item.thanh_pho}/${item.phuong}/${item.quan}`;
-        itemContent = removeVietnameseTones(itemContent);
-        console.log(itemContent);
-        return (
-          itemContent.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !=
-          -1
-        );
-      });
-      if (value === "") {
-        setFilterData(realData);
-      } else {
-        setFilterData(filter);
-      }
-    }, 300);
+  const ChangePagination = (event, value) => {
+    SetCurrentPage(value);
   };
-  const handleDelete = (id) => {};
+
+  const NumberPage = Math.ceil(searchResults.length / RealPerPage);
+  const handleDelete = (id) => { };
 
   return (
     <React.Fragment>
@@ -118,7 +131,8 @@ export default function SpacingGrid() {
                 "aria-label": "Search",
               },
             }}
-            onChangeSearch={handleChangeSearch}
+            onChangeSearch={SearchChange}
+            value={searchTerm}
           />
         </div>
       </Grid>
@@ -130,7 +144,7 @@ export default function SpacingGrid() {
         </Link>
       </Grid>
       <Grid container justify="flex-start" spacing={spacing}>
-        {filterData.map((value) => (
+        {(searchResults.slice(IndexFirstPost, IndexLastPost)).map((value) => (
           <Grid xs={3} key={value.id_nha} item>
             {/* <Paper className={classes.paper} /> */}
             <Real
@@ -140,6 +154,9 @@ export default function SpacingGrid() {
           </Grid>
         ))}
       </Grid>
+      <div className={PaginateStyle.root}>
+        <Pagination className="custom-paginate" count={NumberPage} page={currentPage} onChange={ChangePagination} />
+      </div>
     </React.Fragment>
   );
 }

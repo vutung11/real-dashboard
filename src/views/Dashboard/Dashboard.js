@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
+import { API_KEY } from "../../shared/_constant";
 // react plugin for creating charts
 import ChartistGraph from "react-chartist";
 // @material-ui/core
 import { makeStyles } from "@material-ui/core/styles";
 import Icon from "@material-ui/core/Icon";
+import HomeIcon from '@material-ui/icons/Home';
 // @material-ui/icons
 import Store from "@material-ui/icons/Store";
 import Warning from "@material-ui/icons/Warning";
@@ -16,6 +19,7 @@ import Accessibility from "@material-ui/icons/Accessibility";
 import BugReport from "@material-ui/icons/BugReport";
 import Code from "@material-ui/icons/Code";
 import Cloud from "@material-ui/icons/Cloud";
+import { PieChart, Pie, ComposedChart, LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from "recharts";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -39,10 +43,53 @@ import {
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
+
+const Title = makeStyles((theme) => ({
+  root: {
+    ...theme.typography.button,
+    backgroundColor: theme.palette.background.paper,
+    paddingTop: theme.spacing(2),
+    textAlign: 'center',
+  },
+}));
 const useStyles = makeStyles(styles);
+
+const COLORS = ["#FF8042", "#00C49F", "#FFBB28"];
 
 export default function Dashboard() {
   const classes = useStyles();
+  const TitleClass = Title();
+  const [Chart, SetChart] = useState([]);
+  const [CustomerChart, SetCustomerChart] = useState([]);
+  const [NhaThanhCong, SetNhaThanhCong] = useState([]);
+  const [TongNha, SetTongNha] = useState([]);
+  const [TongKhachHang, SetTongKhachHang] = useState([]);
+  const [TongDaBan, SetTongDaBan] = useState([]);
+  const [TongDangBan, SetTongDangBan] = useState([]);
+  const [NhieuNhaNhat, SetNhieuNhaNhat] = useState([]);
+  useEffect(() => {
+    const fetchApi = async () => {
+      const Quan = await axios.get(`${API_KEY}/thong_ke/nha/quan`)
+      const KhachHang = await axios.get(`${API_KEY}/thong_ke/khach_hang/thang`)
+      const Nha = await axios.get(`${API_KEY}/thong_ke/nha/thang`)
+      const TongNha = await axios.get(`${API_KEY}/thong_ke/nha/loai_nha`)
+      const TongKhachHang = await axios.get(`${API_KEY}/thong_ke/khach_hang/tong`)
+      const TongDaBan = await axios.get(`${API_KEY}/thong_ke/nha/da_ban`)
+      const TongDangBan = await axios.get(`${API_KEY}/thong_ke/nha/dang_ban`)
+      const NhieuNhaNhat = await axios.get(`${API_KEY}/thong_ke/nha/quan_nhieu_nhat`)
+      SetChart(Quan.data)
+      SetCustomerChart(KhachHang.data)
+      SetNhaThanhCong(Nha.data)
+      SetTongNha(TongNha.data)
+      SetTongKhachHang(TongKhachHang.data)
+      SetTongDaBan(TongDaBan.data)
+      SetTongDangBan(TongDangBan.data)
+      SetNhieuNhaNhat(NhieuNhaNhat.data)
+    }
+
+    fetchApi()
+  }, [])
+
   return (
     <div>
       <GridContainer>
@@ -50,21 +97,22 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="warning" stats icon>
               <CardIcon color="warning">
-                <Icon>content_copy</Icon>
+                <HomeIcon />
               </CardIcon>
-              <p className={classes.cardCategory}>Used Space</p>
+              <p className={classes.cardCategory}>Quận Nhiều Nhà</p>
               <h3 className={classes.cardTitle}>
-                49/50 <small>GB</small>
+                {NhieuNhaNhat.map((value) => (
+                  <div key={value.tong_nha}>
+                    {value.ten_quan}
+                  </div>
+                ))}
               </h3>
+
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
-                <Danger>
-                  <Warning />
-                </Danger>
-                <a href="#pablo" onClick={e => e.preventDefault()}>
-                  Get more space
-                </a>
+                <DateRange />
+                Last 24 Hours
               </div>
             </CardFooter>
           </Card>
@@ -73,10 +121,10 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="success" stats icon>
               <CardIcon color="success">
-                <Store />
+                <HomeIcon />
               </CardIcon>
-              <p className={classes.cardCategory}>Revenue</p>
-              <h3 className={classes.cardTitle}>$34,245</h3>
+              <p className={classes.cardCategory}>Tổng Nhà Đã Bán</p>
+              <h3 className={classes.cardTitle}>{TongDangBan}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
@@ -90,15 +138,15 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="danger" stats icon>
               <CardIcon color="danger">
-                <Icon>info_outline</Icon>
+                <Store />
               </CardIcon>
-              <p className={classes.cardCategory}>Fixed Issues</p>
-              <h3 className={classes.cardTitle}>75</h3>
+              <p className={classes.cardCategory}>Tổng Nhà Đã Bán</p>
+              <h3 className={classes.cardTitle}>{TongDaBan}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
-                <LocalOffer />
-                Tracked from Github
+                <DateRange />
+                Last 24 Hours
               </div>
             </CardFooter>
           </Card>
@@ -109,8 +157,8 @@ export default function Dashboard() {
               <CardIcon color="info">
                 <Accessibility />
               </CardIcon>
-              <p className={classes.cardCategory}>Followers</p>
-              <h3 className={classes.cardTitle}>+245</h3>
+              <p className={classes.cardCategory}>Số Khách Hàng Đã Dăng Kí</p>
+              <h3 className={classes.cardTitle}>{TongKhachHang}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
@@ -122,144 +170,119 @@ export default function Dashboard() {
         </GridItem>
       </GridContainer>
       <GridContainer>
-        <GridItem xs={12} sm={12} md={4}>
-          <Card chart>
-            <CardHeader color="success">
-              <ChartistGraph
-                className="ct-chart"
-                data={dailySalesChart.data}
-                type="Line"
-                options={dailySalesChart.options}
-                listener={dailySalesChart.animation}
-              />
-            </CardHeader>
-            <CardBody>
-              <h4 className={classes.cardTitle}>Daily Sales</h4>
-              <p className={classes.cardCategory}>
-                <span className={classes.successText}>
-                  <ArrowUpward className={classes.upArrowCardCategory} /> 55%
-                </span>{" "}
-                increase in today sales.
-              </p>
-            </CardBody>
-            <CardFooter chart>
-              <div className={classes.stats}>
-                <AccessTime /> updated 4 minutes ago
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem>
-        <GridItem xs={12} sm={12} md={4}>
-          <Card chart>
-            <CardHeader color="warning">
-              <ChartistGraph
-                className="ct-chart"
-                data={emailsSubscriptionChart.data}
-                type="Bar"
-                options={emailsSubscriptionChart.options}
-                responsiveOptions={emailsSubscriptionChart.responsiveOptions}
-                listener={emailsSubscriptionChart.animation}
-              />
-            </CardHeader>
-            <CardBody>
-              <h4 className={classes.cardTitle}>Email Subscriptions</h4>
-              <p className={classes.cardCategory}>Last Campaign Performance</p>
-            </CardBody>
-            <CardFooter chart>
-              <div className={classes.stats}>
-                <AccessTime /> campaign sent 2 days ago
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem>
-        <GridItem xs={12} sm={12} md={4}>
-          <Card chart>
-            <CardHeader color="danger">
-              <ChartistGraph
-                className="ct-chart"
-                data={completedTasksChart.data}
-                type="Line"
-                options={completedTasksChart.options}
-                listener={completedTasksChart.animation}
-              />
-            </CardHeader>
-            <CardBody>
-              <h4 className={classes.cardTitle}>Completed Tasks</h4>
-              <p className={classes.cardCategory}>Last Campaign Performance</p>
-            </CardBody>
-            <CardFooter chart>
-              <div className={classes.stats}>
-                <AccessTime /> campaign sent 2 days ago
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem>
-      </GridContainer>
-      <GridContainer>
+
+
         <GridItem xs={12} sm={12} md={6}>
-          <CustomTabs
-            title="Tasks:"
-            headerColor="primary"
-            tabs={[
-              {
-                tabName: "Bugs",
-                tabIcon: BugReport,
-                tabContent: (
-                  <Tasks
-                    checkedIndexes={[0, 3]}
-                    tasksIndexes={[0, 1, 2, 3]}
-                    tasks={bugs}
-                  />
-                )
-              },
-              {
-                tabName: "Website",
-                tabIcon: Code,
-                tabContent: (
-                  <Tasks
-                    checkedIndexes={[0]}
-                    tasksIndexes={[0, 1]}
-                    tasks={website}
-                  />
-                )
-              },
-              {
-                tabName: "Server",
-                tabIcon: Cloud,
-                tabContent: (
-                  <Tasks
-                    checkedIndexes={[1]}
-                    tasksIndexes={[0, 1, 2]}
-                    tasks={server}
-                  />
-                )
-              }
-            ]}
-          />
+
+          <Card>
+            <div className={TitleClass.root}>{"Số nhà mỗi quận đang bán"}</div>
+            <BarChart
+              width={750}
+              height={400}
+              data={Chart}
+              margin={{
+                top: 50,
+                right: 30,
+                left: 5,
+                bottom: 5
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="ten_quan" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="tong_nha" name="Tổng Nhà" fill="#FF0C01" />
+
+            </BarChart>
+          </Card>
         </GridItem>
+
         <GridItem xs={12} sm={12} md={6}>
           <Card>
-            <CardHeader color="warning">
-              <h4 className={classes.cardTitleWhite}>Employees Stats</h4>
-              <p className={classes.cardCategoryWhite}>
-                New employees on 15th September, 2016
-              </p>
-            </CardHeader>
-            <CardBody>
-              <Table
-                tableHeaderColor="warning"
-                tableHead={["ID", "Name", "Salary", "Country"]}
-                tableData={[
-                  ["1", "Dakota Rice", "$36,738", "Niger"],
-                  ["2", "Minerva Hooper", "$23,789", "Curaçao"],
-                  ["3", "Sage Rodriguez", "$56,142", "Netherlands"],
-                  ["4", "Philip Chaney", "$38,735", "Korea, South"]
-                ]}
-              />
-            </CardBody>
+            <div className={TitleClass.root}>{"Số khách hàng đăng kí mỗi tháng  "}</div>
+            <LineChart
+              width={750}
+              height={400}
+              data={CustomerChart}
+              margin={{
+                top: 50,
+                right: 30,
+                left: 5,
+                bottom: 5
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="thang" label="Tháng" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="tong_khach_hang" name="Tổng Khách Hàng" stroke="#FF0C01  " activeDot={{ r: 8 }} />
+            </LineChart>
           </Card>
         </GridItem>
+
+        <GridItem xs={12} sm={12} md={6}>
+
+          <Card>
+            <div className={TitleClass.root}>{"Số Nhà mỗi tháng bán thành công"}</div>
+            <ComposedChart
+              layout="vertical"
+              width={500}
+              height={400}
+              data={NhaThanhCong}
+              margin={{
+                top: 20,
+                right: 20,
+                bottom: 20,
+                left: 50
+              }}
+            >
+              <CartesianGrid stroke="#f5f5f5" />
+              <XAxis type="number" />
+              <YAxis label="Tháng" dataKey="thang" type="category" scale="band" />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="da_ban" name="Đã bán" barSize={20} fill="#413ea0" />
+
+            </ComposedChart>
+          </Card>
+        </GridItem>
+
+        <GridItem xs={12} sm={12} md={6}>
+
+          <Card>
+            <div className={TitleClass.root}>{"Số Chung cư - Nhà - Đất đang bán"}</div>
+            <PieChart width={800} height={400}>
+              <Pie
+                dataKey="tong_nha"
+                nameKey="ten_loai_nha"
+                isAnimationActive={false}
+                data={TongNha}
+                cx={380}
+                cy={180}
+                outerRadius={150}
+                fill="#8884d8"
+                label
+              >
+                {TongNha.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+
+              </Pie>
+
+              <Legend />
+              <Tooltip />
+
+            </PieChart>
+
+          </Card>
+        </GridItem>
+
       </GridContainer>
-    </div>
+      <GridContainer>
+
+      </GridContainer>
+    </div >
   );
 }

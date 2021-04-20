@@ -11,6 +11,10 @@ import Button from "@material-ui/core/Button";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { useHistory } from "react-router-dom";
+import Grid from "@material-ui/core/Grid";
+import CustomInput from "components/CustomInput/CustomInput.js";
+
+import Pagination from '@material-ui/lab/Pagination';
 
 TableList.propTypes = {};
 
@@ -31,24 +35,53 @@ const styles = {
   },
 };
 
+const PagiStyle = makeStyles((theme) => ({
+  root: {
+    "& > *": {
+      marginTop: theme.spacing(10),
+      marginRight: "auto",
+      marginLeft: "auto",
+    },
+  },
+}));
 const useStyles = makeStyles(styles);
 
 function TableList(props) {
   const classes = useStyles();
   const [realData, setRealData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [currentPage, SetCurrentPage] = useState(1);
+  const [RealPerPage] = useState(2);
+  const IndexLastPost = currentPage * RealPerPage;
+  const IndexFirstPost = IndexLastPost - RealPerPage;
+
+
+  const PaginateStyle = PagiStyle();
+
+  const SearchChange = e => {
+    setSearchTerm(e.target.value);
+  };
   useEffect(() => {
     const fetchApi = async () => {
       try {
         const data = await axios.get(`${API_KEY}/khach_hang`);
         setRealData(data.data);
-        console.log(data.data);
-      } catch (e) {
-        console.log(e);
+        const results = (data.data).filter((item) => {
+          let itemContent = `${item.email}/${item.sdt}/${item.ho_ten}/${item.dia_chi}/${item.ngay_tao}`;
+          return (
+            itemContent.toLocaleLowerCase().indexOf(searchTerm.toLocaleLowerCase()) !=
+            -1
+          );
+        });
+        setSearchResults(results);
+      } catch (error) {
+        console.log("Failed to fetch post list:", error.message);
       }
     };
 
     fetchApi();
-  }, []);
+  }, [searchTerm]);
   const [checked, setChecked] = React.useState(true);
 
   const handleChange = (event) => {
@@ -83,73 +116,97 @@ function TableList(props) {
   const handleUpdateClick = (value) => {
     history.push("/admin/user/" + value.id);
   };
+  const ChangePagination = (event, value) => {
+    SetCurrentPage(value);
+  };
+
+  const NumberPage = Math.ceil(searchResults.length / RealPerPage);
 
   return (
     <div>
-      <div className={classes.userList}>
-        <GridContainer container>
-          <GridItem xs={2} sm={2} md={2}>
-            <b className={classes.overFlow}>Email</b>
-          </GridItem>
-          <GridItem xs={2} sm={2} md={2}>
-            <b className={classes.overFlow}>Số Điện Thoại</b>
-          </GridItem>
-          <GridItem xs={2} sm={2} md={2}>
-            <b className={classes.overFlow}>Họ Tên</b>
-          </GridItem>
-          <GridItem xs={2} sm={2} md={2}>
-            <b className={classes.overFlow}>Địa Chỉ</b>
-          </GridItem>
-          <GridItem xs={2} sm={2} md={2}>
-            <b className={classes.overFlow}>Avatar</b>
-          </GridItem>
-          <GridItem xs={2} sm={2} md={2}></GridItem>
-        </GridContainer>
-      </div>
+      <Grid container justify="flex-end" style={{ marginTop: -70 }}>
+        <div className={classes.searchWrapper}>
+          <CustomInput
+            formControlProps={{
+              className: classes.margin + " " + classes.search,
+            }}
+            inputProps={{
+              placeholder: "Search",
+              inputProps: {
+                "aria-label": "Search",
+              },
+            }}
+            onChangeSearch={SearchChange}
+          />
+        </div>
+      </Grid>
+      <GridContainer container>
+        <GridItem xs={2} sm={2} md={2}>
+          <b className={classes.overFlow}>Email</b>
+        </GridItem>
+        <GridItem xs={2} sm={2} md={2}>
+          <b className={classes.overFlow}>Số Điện Thoại</b>
+        </GridItem>
+        <GridItem xs={2} sm={2} md={2}>
+          <b className={classes.overFlow}>Họ Tên</b>
+        </GridItem>
+        <GridItem xs={2} sm={2} md={2}>
+          <b className={classes.overFlow}>Địa Chỉ</b>
+        </GridItem>
+        <GridItem xs={2} sm={2} md={2}>
+          <b className={classes.overFlow}>Avatar</b>
+        </GridItem>
+        <GridItem xs={2} sm={2} md={2}></GridItem>
+      </GridContainer>
       {/* <GridContainer>
                 <GridItem xs={1} sm={1} md={1}>
                     {realData.id && realData.id ? realData.id : ''}
                 </GridItem>
             </GridContainer> */}
-      {realData.map((value) => (
-        <div className={classes.items}>
-          <GridContainer container key={value.id} text-align-center>
-            <GridItem xs={2} sm={2} md={2}>
-              <p className={classes.overFlow}>{value.email}</p>
-            </GridItem>
-            <GridItem xs={2} sm={2} md={2}>
-              <p className={classes.overFlow}>{value.sdt}</p>
-            </GridItem>
-            <GridItem xs={2} sm={2} md={2}>
-              <p className={classes.overFlow}>{value.ho_ten}</p>
-            </GridItem>
-            <GridItem xs={2} sm={2} md={2}>
-              <p className={classes.overFlow}>{value.dia_chi}</p>
-            </GridItem>
-            <GridItem xs={1} sm={1} md={1}>
-              <p className={classes.overFlow}>
-                <img
-                  className={classes.imgUrl}
-                  src={API_KEY_IMG + value.avatar}
-                />
-              </p>
-            </GridItem>
-            <GridItem xs={2} sm={2} md={2}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleUpdateClick(value)}
-              >
-                <EditIcon />
-              </Button>
-              <Button name={value.id} onClick={handleDeleteUser}>
-                <DeleteIcon />
-              </Button>
-            </GridItem>
-          </GridContainer>
-        </div>
-      ))}
-    </div>
+      {
+        (searchResults.slice(IndexFirstPost, IndexLastPost)).map((value) => (
+          <div className={classes.items}>
+            <GridContainer container key={value.id} text-align-center>
+              <GridItem xs={2} sm={2} md={2}>
+                <p className={classes.overFlow}>{value.email}</p>
+              </GridItem>
+              <GridItem xs={2} sm={2} md={2}>
+                <p className={classes.overFlow}>{value.sdt}</p>
+              </GridItem>
+              <GridItem xs={2} sm={2} md={2}>
+                <p className={classes.overFlow}>{value.ho_ten}</p>
+              </GridItem>
+              <GridItem xs={2} sm={2} md={2}>
+                <p className={classes.overFlow}>{value.dia_chi}</p>
+              </GridItem>
+              <GridItem xs={1} sm={1} md={1}>
+                <p className={classes.overFlow}>
+                  <img
+                    className={classes.imgUrl}
+                    src={API_KEY_IMG + value.avatar}
+                  />
+                </p>
+              </GridItem>
+              <GridItem xs={2} sm={2} md={2}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleUpdateClick(value)}
+                >
+                  <EditIcon />
+                </Button>
+                <Button name={value.id} onClick={handleDeleteUser}>
+                  <DeleteIcon />
+                </Button>
+              </GridItem>
+            </GridContainer>
+          </div>
+        ))
+      }
+      <div className={PaginateStyle.root}>
+        <Pagination className="custom-paginate" count={NumberPage} page={currentPage} onChange={ChangePagination} />
+      </div>
+    </div >
   );
 }
 
