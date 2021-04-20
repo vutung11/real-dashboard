@@ -31,7 +31,9 @@ import "./styles.css";
 import { FormControl } from "@material-ui/core";
 import { setConstantValue } from "typescript";
 import axios from "axios";
-
+import { useParams } from "react-router";
+import { API_KEY, API_KEY_IMG } from "../../shared/_constant"
+import _ from 'lodash'
 const styles = {
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
@@ -98,6 +100,8 @@ const BootstrapInput = withStyles((theme) => ({
   },
 }))(InputBase);
 export default function UserProfile() {
+  const [dataFetch, setDataFetch] = useState([]);
+  const { id } = useParams();
   const classes = useStyles();
   const [index, setIndex] = useState(0);
   const [country, setCountry] = React.useState("");
@@ -223,15 +227,71 @@ export default function UserProfile() {
   const uploadBanner = async (e) => {
     const file = e.target.files[0];
     setFilerBanner(file);
-    console.log(URL.createObjectURL(file));
   };
   const uploadList = async (e) => {
     console.log(e.target.files);
     const file = e.target.files;
-    // console.log(URL.createObjectURL(file));
-    console.log(file[0], file);
+    // console.log(typeof(URL.createObjectURL(file)));
     setListImages([...listImages, ...file]);
   };
+  const fetchData = async () => {
+    
+    const res1 = await axios.get("http://be499e2fc8ab.ngrok.io/api/dia_chi");
+    setListThanhPho(res1.data.thanh_pho);
+    const res2 = await axios.get(`${API_KEY}/nha/${id}`)
+    const valThanhPho = _.find(res1.data.thanh_pho, (e) => {
+      return (e._name == res2.data.nha.thanh_pho) 
+    }).id
+    const res3 = await axios.get(`http://be499e2fc8ab.ngrok.io/api/dia_chi/${valThanhPho}`);
+    const valQuanHuyen = _.find(res3.data.quan, (e) => {
+      return (e._name == res2.data.nha.quan) 
+    }).id
+    const res4 = await axios.get(`http://be499e2fc8ab.ngrok.io/api/dia_chi/${valThanhPho}/${valQuanHuyen}`);    
+    const valDuong = _.find(res4.data.duong, (e) => {
+      return (e._name == res2.data.nha.duong) 
+    }).id
+    const valPhuong = _.find(res4.data.phuong, (e) => {
+      return (e._name == res2.data.nha.phuong) 
+    }).id    
+    setValInput((preState) => {
+      return {
+        ...preState,
+        thanhpho: valThanhPho,
+        quanhuyen: valQuanHuyen,
+        duong: valDuong,
+        phuongxa: valPhuong,
+        loainha: res2.data.nha.loai_nha,
+        sophong: res2.data.nha.so_phong,
+        sotoilet: res2.data.nha.so_toilet,
+        dientich: res2.data.nha.dien_tich,
+        gia: res2.data.nha.gia,
+        chitiet: res2.data.nha.mo_ta,
+        banner: res2.data.nha.banner
+      }
+    })
+    setListImages((preState) => {
+      return res2.data.hinh.map(e=>e.link);
+    })
+  //   setValInput({
+  //   thanhpho: res.data.nha.thanh_pho,
+  //   quanhuyen: res.data.nha.quan,
+  //   phuongxa: res.data.nha.phuong,
+  //   duong: res.data.nha.duong,
+  //   loainha: res.data.nha.loai_nha,
+  //   sophong: res.data.nha.so_phong,
+  //   sotoilet: res.data.nha.so_toilet,
+  //   dientich: res.data.nha.dien_tich,
+  //   gia: res.data.nha.gia,
+  //   chitiet: res.data.nha.chitiet,
+  // })
+  }
+  useEffect(() => {
+    fetchData()
+    console.log(id);
+  }, [])
+  useEffect(() => {
+console.log(listImages);
+  }, [listImages])
 
   return (
     <div>
@@ -440,7 +500,8 @@ export default function UserProfile() {
                   <GridItem xs={12} sm={12} md={12}>
                     <img
                       className="banner"
-                      src={fileBanner ? URL.createObjectURL(fileBanner) : ""}
+                      // src={fileBanner ? URL.createObjectURL(fileBanner) : ""}
+                      src = {`${API_KEY_IMG}${valInput.banner}`}
                       alt=""
                     ></img>
                   </GridItem>
@@ -462,7 +523,6 @@ export default function UserProfile() {
                     hidden
                     multiple
                     onChange={(e) => {
-                      console.log(typeof listImages);
                       uploadList(e);
                     }}
                   />
@@ -473,7 +533,8 @@ export default function UserProfile() {
                       <GridItem xs={4}>
                         <Image
                           className="imgUrl"
-                          src={URL.createObjectURL(e)}
+                          // src={URL.createObjectURL(e)}
+                          src = {`${API_KEY_IMG}${e}`}
                         />
                       </GridItem>
                     );

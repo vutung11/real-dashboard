@@ -1,3 +1,3 @@
 
-export const API_KEY = "http://127.0.0.1:8000/api";
-export const API_KEY_IMG = "http://127.0.0.1:8000/images/";
+export const API_KEY = "http://be499e2fc8ab.ngrok.io/api";
+export const API_KEY_IMG = "http://be499e2fc8ab.ngrok.io/images/";
