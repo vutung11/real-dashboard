@@ -109,7 +109,7 @@ export default function UserProfile() {
     quanhuyen: "",
     phuongxa: "",
     duong: "",
-    diachi: "",
+    sonha: "",
     loainha: "",
     sophong: "",
     sotoilet: "",
@@ -122,24 +122,24 @@ export default function UserProfile() {
   const [listPhuongXa, setListPhuongXa] = useState([]);
   const [listDuong, setListDuong] = useState([]);
   const fetchDataListThanhPho = async () => {
-    const res = await axios.get("http://be499e2fc8ab.ngrok.io/api/dia_chi");
+    const res = await axios.get("http://457c5d09206e.ngrok.io/api/dia_chi");
     setListThanhPho(res.data.thanh_pho);
   };
   const fetchDataListQuanHuyen = async () => {
     const res = await axios.get(
-      `http://be499e2fc8ab.ngrok.io/api/dia_chi/${valInput.thanhpho}`
+      `http://457c5d09206e.ngrok.io/api/dia_chi/${valInput.thanhpho}`
     );
     setListQuanHuyen(res.data.quan);
   };
   const fetchDataListPhuongXa = async () => {
     const res = await axios.get(
-      `http://be499e2fc8ab.ngrok.io/api/dia_chi/${valInput.thanhpho}/${valInput.quanhuyen}`
+      `http://457c5d09206e.ngrok.io/api/dia_chi/${valInput.thanhpho}/${valInput.quanhuyen}`
     );
     setListPhuongXa(res.data.phuong);
   };
   const fetchDataListDuong = async () => {
     const res = await axios.get(
-      `http://be499e2fc8ab.ngrok.io/api/dia_chi/${valInput.thanhpho}/${valInput.quanhuyen}`
+      `http://457c5d09206e.ngrok.io/api/dia_chi/${valInput.thanhpho}/${valInput.quanhuyen}`
     );
     setListDuong(res.data.duong);
   };
@@ -184,7 +184,7 @@ export default function UserProfile() {
     const postData = {
       id_khach_hang: 15,
       hinh_thuc: 1,
-      loai_nha: 1,
+      loai_nha: valInput.loainha,
       lat: 1,
       lon: 2,
       gia: valInput.gia,
@@ -197,7 +197,7 @@ export default function UserProfile() {
       quan: valInput.quanhuyen,
       phuong: valInput.phuongxa,
       duong: 2,
-      so_nha: 2,
+      so_nha: valInput.sonha,
       trang_thai: 1,
       duyet: 1,
       // images: listImages,
@@ -213,7 +213,7 @@ export default function UserProfile() {
     }
     console.log(form_data.getAll("images[]"), "form_data");
     // console.log(postData);
-    axios.post("http://be499e2fc8ab.ngrok.io/api/nha", form_data, {
+    axios.post("http://457c5d09206e.ngrok.io/api/nha", form_data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -238,8 +238,6 @@ export default function UserProfile() {
       <GridContainer>
         <GridItem xs={12} sm={4}>
           <Card xs={12} sm={4}>
-            {/* <TextField id="outlined-basic" label="Nhập tiêu đề nhà" variant="outlined" />
-          <TextareaAutosize aria-label="empty textarea" placeholder="Empty" /> */}
             <Tabs
               position="static"
               value={index}
@@ -328,15 +326,15 @@ export default function UserProfile() {
                   </NativeSelect>
                 </GridItem>
                 <GridItem style={{ marginTop: 12, marginBottom: 80 }}>
-                  <InputLabel style={{ marginBottom: 5 }}>Địa chỉ</InputLabel>
+                  <InputLabel style={{ marginBottom: 5 }}>Số nhà</InputLabel>
                   <TextField
                     style={{ minWidth: "100%" }}
                     id="outlined-size-small"
                     variant="outlined"
                     size="small"
-                    name="diachi"
+                    name="sonha"
                     onChange={onChangeInput}
-                    value={valInput.diachi}
+                    value={valInput.sonha}
                   />
                 </GridItem>
               </GridItem>

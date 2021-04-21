@@ -12,6 +12,7 @@ import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import bgImage from "assets/img/sidebar-2.jpg";
 import GridListImage from "components/GridListImage/GridListImage";
+import ReactMapGL from "react-map-gl";
 import axios from "axios";
 // import "mapbox-gl/dist/mapbox-gl.css";
 import { MAP_BOX_API } from "assets/jss/_constant";
@@ -69,18 +70,31 @@ const RealDetail = (props) => {
   const classes = useStyles();
   const { detail } = useParams();
   const mapContainer = useRef();
-  const [lng, setLng] = useState(-70.9);
-  const [lat, setLat] = useState(42.35);
+  const [lng, setLng] = useState(0);
+  const [lat, setLat] = useState(0);
   const [zoom, setZoom] = useState(15);
   const [tileData, setTileData] = useState(TILE_DATA);
   const [realData, setRealData] = useState({});
 
   useEffect(() => {
+    // navigator.geolocation.getCurrentPosition(function (position) {
+    //   setLng(position.coords.longitude);
+    //   setLat(position.coords.latitude);
+    // });
     const map = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/streets-v11",
       center: [lng, lat],
       zoom: zoom,
+    });
+
+    let marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+
+    map.on("click", function (e) {
+      marker.remove();
+      setLng(e.lngLat.lng);
+      setLat(e.lngLat.lat);
+      marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
     });
 
     return () => map.remove();
@@ -91,9 +105,8 @@ const RealDetail = (props) => {
       try {
         const data = await axios.get(`${API_KEY}/nha/${detail}`);
         setRealData(data.data);
-        setLng(data.data.nha.lat);
-        setLat(data.data.nha.lon);
-        console.log(data.data.hinh);
+        setLng(data.data.nha.lon);
+        setLat(data.data.nha.lat);
       } catch (e) {
         console.log(e);
       }

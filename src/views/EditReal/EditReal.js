@@ -32,8 +32,8 @@ import { FormControl } from "@material-ui/core";
 import { setConstantValue } from "typescript";
 import axios from "axios";
 import { useParams } from "react-router";
-import { API_KEY, API_KEY_IMG } from "../../shared/_constant"
-import _ from 'lodash'
+import { API_KEY, API_KEY_IMG } from "../../shared/_constant";
+import _ from "lodash";
 const styles = {
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
@@ -113,7 +113,7 @@ export default function UserProfile() {
     quanhuyen: "",
     phuongxa: "",
     duong: "",
-    diachi: "",
+    sonha: "",
     loainha: "",
     sophong: "",
     sotoilet: "",
@@ -126,24 +126,24 @@ export default function UserProfile() {
   const [listPhuongXa, setListPhuongXa] = useState([]);
   const [listDuong, setListDuong] = useState([]);
   const fetchDataListThanhPho = async () => {
-    const res = await axios.get("http://be499e2fc8ab.ngrok.io/api/dia_chi");
+    const res = await axios.get("http://457c5d09206e.ngrok.io/api/dia_chi");
     setListThanhPho(res.data.thanh_pho);
   };
   const fetchDataListQuanHuyen = async () => {
     const res = await axios.get(
-      `http://be499e2fc8ab.ngrok.io/api/dia_chi/${valInput.thanhpho}`
+      `http://457c5d09206e.ngrok.io/api/dia_chi/${valInput.thanhpho}`
     );
     setListQuanHuyen(res.data.quan);
   };
   const fetchDataListPhuongXa = async () => {
     const res = await axios.get(
-      `http://be499e2fc8ab.ngrok.io/api/dia_chi/${valInput.thanhpho}/${valInput.quanhuyen}`
+      `http://457c5d09206e.ngrok.io/api/dia_chi/${valInput.thanhpho}/${valInput.quanhuyen}`
     );
     setListPhuongXa(res.data.phuong);
   };
   const fetchDataListDuong = async () => {
     const res = await axios.get(
-      `http://be499e2fc8ab.ngrok.io/api/dia_chi/${valInput.thanhpho}/${valInput.quanhuyen}`
+      `http://457c5d09206e.ngrok.io/api/dia_chi/${valInput.thanhpho}/${valInput.quanhuyen}`
     );
     setListDuong(res.data.duong);
   };
@@ -188,7 +188,7 @@ export default function UserProfile() {
     const postData = {
       id_khach_hang: 15,
       hinh_thuc: 1,
-      loai_nha: 1,
+      loai_nha: valInput.loainha,
       lat: 1,
       lon: 2,
       gia: valInput.gia,
@@ -201,7 +201,7 @@ export default function UserProfile() {
       quan: valInput.quanhuyen,
       phuong: valInput.phuongxa,
       duong: 2,
-      so_nha: 2,
+      so_nha: valInput.sonha,
       trang_thai: 1,
       duyet: 1,
       // images: listImages,
@@ -217,7 +217,7 @@ export default function UserProfile() {
     }
     console.log(form_data.getAll("images[]"), "form_data");
     // console.log(postData);
-    axios.post("http://be499e2fc8ab.ngrok.io/api/nha", form_data, {
+    axios.post("http://457c5d09206e.ngrok.io/api/nha", form_data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -235,24 +235,27 @@ export default function UserProfile() {
     setListImages([...listImages, ...file]);
   };
   const fetchData = async () => {
-    
-    const res1 = await axios.get("http://be499e2fc8ab.ngrok.io/api/dia_chi");
+    const res1 = await axios.get("http://457c5d09206e.ngrok.io/api/dia_chi");
     setListThanhPho(res1.data.thanh_pho);
-    const res2 = await axios.get(`${API_KEY}/nha/${id}`)
+    const res2 = await axios.get(`${API_KEY}/nha/${id}`);
     const valThanhPho = _.find(res1.data.thanh_pho, (e) => {
-      return (e._name == res2.data.nha.thanh_pho) 
-    }).id
-    const res3 = await axios.get(`http://be499e2fc8ab.ngrok.io/api/dia_chi/${valThanhPho}`);
+      return e._name == res2.data.nha.thanh_pho;
+    }).id;
+    const res3 = await axios.get(
+      `http://457c5d09206e.ngrok.io/api/dia_chi/${valThanhPho}`
+    );
     const valQuanHuyen = _.find(res3.data.quan, (e) => {
-      return (e._name == res2.data.nha.quan) 
-    }).id
-    const res4 = await axios.get(`http://be499e2fc8ab.ngrok.io/api/dia_chi/${valThanhPho}/${valQuanHuyen}`);    
+      return e._name == res2.data.nha.quan;
+    }).id;
+    const res4 = await axios.get(
+      `http://457c5d09206e.ngrok.io/api/dia_chi/${valThanhPho}/${valQuanHuyen}`
+    );
     const valDuong = _.find(res4.data.duong, (e) => {
-      return (e._name == res2.data.nha.duong) 
-    }).id
+      return e._name == res2.data.nha.duong;
+    }).id;
     const valPhuong = _.find(res4.data.phuong, (e) => {
-      return (e._name == res2.data.nha.phuong) 
-    }).id    
+      return e._name == res2.data.nha.phuong;
+    }).id;
     setValInput((preState) => {
       return {
         ...preState,
@@ -260,38 +263,39 @@ export default function UserProfile() {
         quanhuyen: valQuanHuyen,
         duong: valDuong,
         phuongxa: valPhuong,
+        sonha: res2.data.nha.so_nha,
         loainha: res2.data.nha.loai_nha,
         sophong: res2.data.nha.so_phong,
         sotoilet: res2.data.nha.so_toilet,
         dientich: res2.data.nha.dien_tich,
         gia: res2.data.nha.gia,
         chitiet: res2.data.nha.mo_ta,
-        banner: res2.data.nha.banner
-      }
-    })
+        banner: res2.data.nha.banner,
+      };
+    });
     setListImages((preState) => {
-      return res2.data.hinh.map(e=>e.link);
-    })
-  //   setValInput({
-  //   thanhpho: res.data.nha.thanh_pho,
-  //   quanhuyen: res.data.nha.quan,
-  //   phuongxa: res.data.nha.phuong,
-  //   duong: res.data.nha.duong,
-  //   loainha: res.data.nha.loai_nha,
-  //   sophong: res.data.nha.so_phong,
-  //   sotoilet: res.data.nha.so_toilet,
-  //   dientich: res.data.nha.dien_tich,
-  //   gia: res.data.nha.gia,
-  //   chitiet: res.data.nha.chitiet,
-  // })
-  }
+      return res2.data.hinh.map((e) => e.link);
+    });
+    //   setValInput({
+    //   thanhpho: res.data.nha.thanh_pho,
+    //   quanhuyen: res.data.nha.quan,
+    //   phuongxa: res.data.nha.phuong,
+    //   duong: res.data.nha.duong,
+    //   loainha: res.data.nha.loai_nha,
+    //   sophong: res.data.nha.so_phong,
+    //   sotoilet: res.data.nha.so_toilet,
+    //   dientich: res.data.nha.dien_tich,
+    //   gia: res.data.nha.gia,
+    //   chitiet: res.data.nha.chitiet,
+    // })
+  };
   useEffect(() => {
-    fetchData()
+    fetchData();
     console.log(id);
-  }, [])
+  }, []);
   useEffect(() => {
-console.log(listImages);
-  }, [listImages])
+    console.log(listImages);
+  }, [listImages]);
 
   return (
     <div>
@@ -388,15 +392,15 @@ console.log(listImages);
                   </NativeSelect>
                 </GridItem>
                 <GridItem style={{ marginTop: 12, marginBottom: 80 }}>
-                  <InputLabel style={{ marginBottom: 5 }}>Địa chỉ</InputLabel>
+                  <InputLabel style={{ marginBottom: 5 }}>Số nhà</InputLabel>
                   <TextField
                     style={{ minWidth: "100%" }}
                     id="outlined-size-small"
                     variant="outlined"
                     size="small"
-                    name="diachi"
+                    name="sonha"
                     onChange={onChangeInput}
-                    value={valInput.diachi}
+                    value={valInput.sonha}
                   />
                 </GridItem>
               </GridItem>
@@ -501,7 +505,7 @@ console.log(listImages);
                     <img
                       className="banner"
                       // src={fileBanner ? URL.createObjectURL(fileBanner) : ""}
-                      src = {`${API_KEY_IMG}${valInput.banner}`}
+                      src={`${API_KEY_IMG}${valInput.banner}`}
                       alt=""
                     ></img>
                   </GridItem>
@@ -534,7 +538,7 @@ console.log(listImages);
                         <Image
                           className="imgUrl"
                           // src={URL.createObjectURL(e)}
-                          src = {`${API_KEY_IMG}${e}`}
+                          src={`${API_KEY_IMG}${e}`}
                         />
                       </GridItem>
                     );
