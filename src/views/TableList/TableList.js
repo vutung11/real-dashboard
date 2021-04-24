@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useHistory } from "react-router-dom";
+import blankavt from "./blankavt.jpg";
 
 TableList.propTypes = {
 
@@ -18,8 +19,9 @@ TableList.propTypes = {
 
 const styles = {
     imgUrl: {
-        width: `100%`,
-        height: `100%`,
+        width: `30px`,
+        height: `30px`,
+        borderRadius: `100px`
     },
     overFlow: {
         overflow: `hidden`
@@ -28,8 +30,11 @@ const styles = {
         backgroundImage: `linearGradient(to bottom #018994, #007882)`,
     },
     items: {
-        paddingTop: `3%`,
+        paddingTop: `1%`,
         borderBottom: `1px solid #018994`
+    },
+    btn: {
+        marginTop: `10%`
     }
 }
 
@@ -138,11 +143,11 @@ function TableList(props) {
                                 <p className={classes.overFlow}>{value.dia_chi}</p>
                             </GridItem>
                             <GridItem xs={1} sm={1} md={1}>
-                                <p className={classes.overFlow}><img className={classes.imgUrl} src={API_KEY_IMG + value.avatar} /></p>
+                                <p className={classes.overFlow}><img className={classes.imgUrl} src={!value.avatar ? blankavt : API_KEY_IMG + value.avatar} /></p>
                             </GridItem>
                             <GridItem xs={2} sm={2} md={2}>
-                                <Button variant="contained" color="primary" onClick={() => handleUpdateClick(value)}><EditIcon /></Button>
-                                <Button name={value.id} onClick={handleDeleteUser}><DeleteIcon /></Button>
+                                <Button className={classes.btn} variant="contained" color="primary" onClick={() => handleUpdateClick(value)}><EditIcon /></Button>
+                                <Button className={classes.btn} name={value.id} onClick={handleDeleteUser}><DeleteIcon /></Button>
                             </GridItem>
                         </GridContainer>
                     </div>

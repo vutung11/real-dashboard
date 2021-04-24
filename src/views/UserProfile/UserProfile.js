@@ -112,7 +112,6 @@ export default function UserProfile() {
     console.log(file);
   }
 
-
   const handleUpdateClick = (e) => {
     const id = e.target.getAttribute("name");
     console.log(id);
@@ -336,27 +335,6 @@ export default function UserProfile() {
                 </GridItem>
                 {setDisableRole()}
               </GridContainer>
-              <GridContainer>
-                <Card className={classes.cardMargin}>
-                  <CardHeader color="primary">
-                    <h4 className={classes.cardTitleWhite}>Avatar</h4>
-                  </CardHeader>
-                  <CardBody>
-                    <Grid item xs={12}>
-                      <img className="imgUrl" src={imgUrl ? window.URL.createObjectURL(imgUrl) : API_KEY_IMG + user.avatar}></img>
-                    </Grid>
-                  </CardBody>
-                  <CardFooter>
-                    <input
-                      name="avatar"
-                      type="file"
-                      onChange={handleFile} />
-                    {/* <Button onClick={handleFileUpload} variant="contained" component="label">
-                      Đổi Avatar
-                    </Button> */}
-                  </CardFooter>
-                </Card>
-              </GridContainer>
             </CardBody>
             <CardFooter>
               <Button color="primary" name={user.id} onClick={handleUpdateClick}>Chỉnh Sửa</Button>
@@ -367,9 +345,15 @@ export default function UserProfile() {
           <Card profile>
             <CardAvatar profile>
               <a href="#pablo" onClick={e => e.preventDefault()}>
-                <img src={!user.avatar ? blankavt : API_KEY_IMG + user.avatar} alt="..." />
+                <img src={imgUrl ? window.URL.createObjectURL(imgUrl) : blankavt} alt="..." />
               </a>
             </CardAvatar>
+            <CardHeader>
+              <input
+                name="avatar"
+                type="file"
+                onChange={handleFile} />
+            </CardHeader>
             <CardBody profile>
               <h6 className={classes.cardCategory}><b>{roleName()}</b></h6>
               <h4 className={classes.cardTitle}>{user.ho_ten}</h4>
