@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
+import blankavt from "./blankavt.jpg";
 // core components
 import Grid from '@material-ui/core/Grid';
 import GridItem from "components/Grid/GridItem.js";
@@ -53,7 +54,7 @@ export default function UserProfile() {
   const [phone, setPhone] = React.useState();
   const [name, setName] = React.useState();
   const [address, setAddress] = React.useState();
-  const [imgUrl, setImgUrl] = React.useState();
+  const [imgUrl, setImgUrl] = React.useState("");
   const [user, setUser] = useState({})
   const { id } = useParams();
   useEffect(() => {
@@ -62,15 +63,14 @@ export default function UserProfile() {
         window.location = 'http://localhost:3001/login';
       }
       const data = await axios.get(`${API_KEY}/khach_hang/${id}`)
-      setUser(data.data)
-      setValue(data.data.chuc_vu)
-      setEmail(data.data.email)
-      setPhone(data.data.sdt)
-      setName(data.data.ho_ten)
-      setAddress(data.data.dia_chi)
-      setAddress(data.data.hinh)
+      setUser(data.data.khach_hang)
+      setValue(data.data.khach_hang.chuc_vu)
+      setEmail(data.data.khach_hang.email)
+      setPhone(data.data.khach_hang.sdt)
+      setName(data.data.khach_hang.ho_ten)
+      setAddress(data.data.khach_hang.dia_chi)
       console.log(data, 'data')
-      localStorage.setItem('auth', JSON.stringify(data.data))
+      localStorage.setItem('auth', JSON.stringify(data.data.khach_hang))
       console.log(user, 'user')
     }
 
@@ -106,21 +106,34 @@ export default function UserProfile() {
     setAddress(event.target.value);
   };
 
-  const handleImgUrlChange = (event) => {
-    setImgUrl(event.target.value);
-  };
+  const handleFile = async (e) => {
+    const file = e.target.files[0];
+    setImgUrl(file);
+    console.log(file);
+  }
+
 
   const handleUpdateClick = (e) => {
     const id = e.target.getAttribute("name");
+    console.log(id);
+
     if (id) {
-      axios.put(API_KEY + '/khach_hang/' + id, {
+      const postData = {
         email: email,
         sdt: phone,
         ho_ten: name,
         dia_chi: address,
-        hinh: imgUrl,
+        avatar: imgUrl,
         chuc_vu: value,
-      })
+      };
+
+      var form_data = new FormData();
+
+      for (var key in postData) {
+        form_data.append(key, postData[key]);
+      }
+      // console.log(object)
+      axios.post(API_KEY + '/khach_hang/' + id + '?_method=put', form_data)
         .then(res => {
           console.log(res.data);
         })
@@ -330,19 +343,17 @@ export default function UserProfile() {
                   </CardHeader>
                   <CardBody>
                     <Grid item xs={12}>
-                      <img className="imgUrl" src={API_KEY_IMG + user.avatar}></img>
+                      <img className="imgUrl" src={imgUrl ? window.URL.createObjectURL(imgUrl) : API_KEY_IMG + user.avatar}></img>
                     </Grid>
                   </CardBody>
                   <CardFooter>
-                    <Button variant="contained" component="label">
-                      Đổi Avatar
                     <input
-                        type="file"
-                        hidden
-                        disabled={disableRole()}
-                        value={imgUrl}
-                        onChange={handleImgUrlChange} />
-                    </Button>
+                      name="avatar"
+                      type="file"
+                      onChange={handleFile} />
+                    {/* <Button onClick={handleFileUpload} variant="contained" component="label">
+                      Đổi Avatar
+                    </Button> */}
                   </CardFooter>
                 </Card>
               </GridContainer>
@@ -356,7 +367,7 @@ export default function UserProfile() {
           <Card profile>
             <CardAvatar profile>
               <a href="#pablo" onClick={e => e.preventDefault()}>
-                <img src={API_KEY_IMG + user.avatar} alt="..." />
+                <img src={!user.avatar ? blankavt : API_KEY_IMG + user.avatar} alt="..." />
               </a>
             </CardAvatar>
             <CardBody profile>

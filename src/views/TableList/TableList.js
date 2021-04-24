@@ -37,34 +37,17 @@ const styles = {
 const useStyles = makeStyles(styles);
 
 function TableList(props) {
-  const classes = useStyles();
-  const [realData, setRealData] = useState([]);
-  const typingRacing = useRef(null);
-  const [filterUser, setFilterUser] = useState([]);
-  useEffect(() => {
-    const fetchApi = async () => {
-      try {
-        const data = await axios.get(`${API_KEY}/khach_hang`);
-        setRealData(data.data);
-        setFilterUser(data.data);
-        console.log(data.data);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-
-    fetchApi();
-  }, []);
-
-function TableList(props) {
     const classes = useStyles();
     const [realData, setRealData] = useState([]);
+    const typingRacing = useRef(null);
+    const [filterUser, setFilterUser] = useState([]);
+
     useEffect(() => {
         const fetchApi = async () => {
             try {
                 const data = await axios.get(`${API_KEY}/khach_hang`)
-                setRealData(data.data)
-                console.log(data.data);
+                setRealData(data.data.khach_hang)
+                console.log(data.data.khach_hang);
             } catch (e) {
                 console.log(e)
             }
@@ -72,6 +55,7 @@ function TableList(props) {
 
         fetchApi()
     }, [])
+
     const [checked, setChecked] = React.useState(true);
 
     const handleChange = (event) => {
