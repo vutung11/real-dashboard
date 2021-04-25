@@ -32,7 +32,7 @@ import ViewReal from "views/ViewReal/ViewReal";
 const dashboards = [
   {
     path: "/dashboard",
-    name: "Dashboard",
+    name: "Thống Kê",
     rtlName: "لوحة القيادة",
     icon: Dashboard,
     component: DashboardPage,
@@ -40,7 +40,7 @@ const dashboards = [
   },
   {
     path: "/user/:id",
-    name: "User Profile",
+    name: "Thông Tin Người Dùng",
     rtlName: "ملف تعريفي للمستخدم",
     icon: Person,
     component: UserProfile,
@@ -48,7 +48,7 @@ const dashboards = [
   },
   {
     path: "/table",
-    name: "Table List",
+    name: "Người Dùng",
     rtlName: "قائمة الجدول",
     icon: "content_paste",
     component: TableList,
@@ -56,7 +56,7 @@ const dashboards = [
   },
   {
     path: "/real",
-    name: "Realestate",
+    name: "Danh Sách Nhà",
     icon: AppsIcon,
     layout: "/admin",
     component: Real,
