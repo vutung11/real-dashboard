@@ -348,11 +348,18 @@ export default function UserProfile() {
                 <img src={imgUrl ? window.URL.createObjectURL(imgUrl) : blankavt} alt="..." />
               </a>
             </CardAvatar>
-            <CardHeader>
+            <CardHeader style={{ margin: "10px" }}>
+              <label
+                htmlFor="uploadAvatar"
+                style={{ cursor: "pointer" }}>
+                Thay Đổi Ảnh Đại Diện
+              </label>
               <input
+                id="uploadAvatar"
                 name="avatar"
                 type="file"
-                onChange={handleFile} />
+                onChange={handleFile}
+                style={{ opacity: 0, position: 'aboslute', zIndex: '-1' }} />
             </CardHeader>
             <CardBody profile>
               <h6 className={classes.cardCategory}><b>{roleName()}</b></h6>
