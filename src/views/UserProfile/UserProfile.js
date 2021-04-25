@@ -348,12 +348,12 @@ export default function UserProfile() {
                 <img src={imgUrl ? window.URL.createObjectURL(imgUrl) : blankavt} alt="..." />
               </a>
             </CardAvatar>
-            <CardHeader>
+            {/* <CardHeader>
               <input
                 name="avatar"
                 type="file"
                 onChange={handleFile} />
-            </CardHeader>
+            </CardHeader> */}
             <CardBody profile>
               <h6 className={classes.cardCategory}><b>{roleName()}</b></h6>
               <h4 className={classes.cardTitle}>{user.ho_ten}</h4>

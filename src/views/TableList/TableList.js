@@ -6,12 +6,20 @@ import GridContainer from "components/Grid/GridContainer.js";
 import axios from "axios";
 import { API_KEY } from "../../shared/_constant";
 import { API_KEY_IMG } from "../../shared/_constant";
-import { makeStyles } from "@material-ui/core/styles";
+import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useHistory } from "react-router-dom";
 import blankavt from "./blankavt.jpg";
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
 TableList.propTypes = {
 
@@ -37,6 +45,24 @@ const styles = {
         marginTop: `10%`
     }
 }
+
+const StyledTableCell = withStyles((theme) => ({
+    head: {
+        backgroundColor: "#3f51b5",
+        color: theme.palette.common.white,
+    },
+    body: {
+        fontSize: 14,
+    },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+    root: {
+        '&:nth-of-type(odd)': {
+            backgroundColor: theme.palette.action.hover,
+        },
+    },
+}))(TableRow);
 
 
 const useStyles = makeStyles(styles);
@@ -98,62 +124,38 @@ function TableList(props) {
     };
 
     return (
-        <div>
-            <div className={classes.userList}>
-                <GridContainer container>
-                    <GridItem xs={2} sm={2} md={2}>
-                        <b className={classes.overFlow}>Email</b>
-                    </GridItem>
-                    <GridItem xs={2} sm={2} md={2}>
-                        <b className={classes.overFlow}>Số Điện Thoại</b>
-                    </GridItem>
-                    <GridItem xs={2} sm={2} md={2}>
-                        <b className={classes.overFlow}>Họ Tên</b>
-                    </GridItem>
-                    <GridItem xs={2} sm={2} md={2}>
-                        <b className={classes.overFlow}>Địa Chỉ</b>
-                    </GridItem>
-                    <GridItem xs={2} sm={2} md={2}>
-                        <b className={classes.overFlow}>Avatar</b>
-                    </GridItem>
-                    <GridItem xs={2} sm={2} md={2}>
 
-                    </GridItem>
-                </GridContainer>
-            </div>
-            {/* <GridContainer>
-                <GridItem xs={1} sm={1} md={1}>
-                    {realData.id && realData.id ? realData.id : ''}
-                </GridItem>
-            </GridContainer> */}
-            {
-                realData.map((value) => (
-                    <div className={classes.items}>
-                        <GridContainer container key={value.id} text-align-center>
-                            <GridItem xs={2} sm={2} md={2}>
-                                <p className={classes.overFlow}>{value.email}</p>
-                            </GridItem>
-                            <GridItem xs={2} sm={2} md={2}>
-                                <p className={classes.overFlow}>{value.sdt}</p>
-                            </GridItem>
-                            <GridItem xs={2} sm={2} md={2}>
-                                <p className={classes.overFlow}>{value.ho_ten}</p>
-                            </GridItem>
-                            <GridItem xs={2} sm={2} md={2}>
-                                <p className={classes.overFlow}>{value.dia_chi}</p>
-                            </GridItem>
-                            <GridItem xs={1} sm={1} md={1}>
-                                <p className={classes.overFlow}><img className={classes.imgUrl} src={!value.avatar ? blankavt : API_KEY_IMG + value.avatar} /></p>
-                            </GridItem>
-                            <GridItem xs={2} sm={2} md={2}>
-                                <Button className={classes.btn} variant="contained" color="primary" onClick={() => handleUpdateClick(value)}><EditIcon /></Button>
-                                <Button className={classes.btn} name={value.id} onClick={handleDeleteUser}><DeleteIcon /></Button>
-                            </GridItem>
-                        </GridContainer>
-                    </div>
-                ))
-            }
-        </div >
+        <TableContainer component={Paper}>
+            <Table className={classes.table} aria-label="customized table">
+                <TableHead>
+                    <TableRow>
+                        <StyledTableCell>Email</StyledTableCell>
+                        <StyledTableCell align="center">Số Điện Thoại</StyledTableCell>
+                        <StyledTableCell align="center">Họ Tên</StyledTableCell>
+                        <StyledTableCell align="center">Địa Chỉ</StyledTableCell>
+                        <StyledTableCell align="center">Ảnh Đại Diện</StyledTableCell>
+                        <StyledTableCell align="center"></StyledTableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {realData.map((value) => (
+                        <StyledTableRow key={value.id}>
+                            <StyledTableCell component="th" scope="row">
+                                {value.email}
+                            </StyledTableCell>
+                            <StyledTableCell align="center">{value.sdt}</StyledTableCell>
+                            <StyledTableCell align="center">{value.ho_ten}</StyledTableCell>
+                            <StyledTableCell align="center">{value.dia_chi}</StyledTableCell>
+                            <StyledTableCell align="center"><img className={classes.imgUrl} src={!value.avatar ? blankavt : API_KEY_IMG + value.avatar} /></StyledTableCell>
+                            <StyledTableCell>
+                                <Button variant="contained" color="primary" onClick={() => handleUpdateClick(value)}><EditIcon /></Button>
+                                <Button name={value.id} onClick={handleDeleteUser}><DeleteIcon /></Button>
+                            </StyledTableCell>
+                        </StyledTableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
     );
 }
 
