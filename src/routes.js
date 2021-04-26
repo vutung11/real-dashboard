@@ -28,6 +28,7 @@ import Real from "views/Real/Real.js";
 import RealDetail from "views/RealDetail/RealDetail.js";
 import AddReal from "views/AddReal/AddReal";
 import ViewReal from "views/ViewReal/ViewReal";
+import ChangePassword from "views/Password/ChangePassword";
 
 const dashboards = [
   {
@@ -82,6 +83,14 @@ const dashboards = [
     name: "Duyệt bài",
     layout: "/admin",
     component: ViewReal,
+    icon: "",
+    hidden: true,
+  },
+  {
+    path: "/changepass/:id",
+    name: "Đổi Mật Khẩu",
+    layout: "/admin",
+    component: ChangePassword,
     icon: "",
     hidden: true,
   },
