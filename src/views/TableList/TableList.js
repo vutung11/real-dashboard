@@ -14,14 +14,14 @@ import { useHistory } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import CustomInput from "components/CustomInput/CustomInput.js";
 
-import Pagination from '@material-ui/lab/Pagination';
+import Pagination from "@material-ui/lab/Pagination";
 
 TableList.propTypes = {};
 
 const styles = {
   imgUrl: {
-    width: `100%`,
-    height: `100%`,
+    width: `30px`,
+    height: `30px`,
   },
   overFlow: {
     overflow: `hidden`,
@@ -30,8 +30,8 @@ const styles = {
     backgroundImage: `linearGradient(to bottom #018994, #007882)`,
   },
   items: {
-    paddingTop: `3%`,
-    borderBottom: `1px solid #018994`,
+    paddingTop: `1%`,
+    borderBottom: `1px solid #C9D4D4`,
   },
 };
 
@@ -52,26 +52,28 @@ function TableList(props) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [currentPage, SetCurrentPage] = useState(1);
-  const [RealPerPage] = useState(2);
+  const [RealPerPage] = useState(7);
   const IndexLastPost = currentPage * RealPerPage;
   const IndexFirstPost = IndexLastPost - RealPerPage;
 
-
   const PaginateStyle = PagiStyle();
 
-  const SearchChange = e => {
+  const SearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
   useEffect(() => {
     const fetchApi = async () => {
       try {
         const data = await axios.get(`${API_KEY}/khach_hang`);
-        setRealData(data.data);
-        const results = (data.data).filter((item) => {
+        const Data = data.data.khach_hang;
+        setRealData(Data);
+        // console.log(Data);
+        const results = Data.filter((item) => {
           let itemContent = `${item.email}/${item.sdt}/${item.ho_ten}/${item.dia_chi}/${item.ngay_tao}`;
           return (
-            itemContent.toLocaleLowerCase().indexOf(searchTerm.toLocaleLowerCase()) !=
-            -1
+            itemContent
+              .toLocaleLowerCase()
+              .indexOf(searchTerm.toLocaleLowerCase()) != -1
           );
         });
         setSearchResults(results);
@@ -163,50 +165,53 @@ function TableList(props) {
                     {realData.id && realData.id ? realData.id : ''}
                 </GridItem>
             </GridContainer> */}
-      {
-        (searchResults.slice(IndexFirstPost, IndexLastPost)).map((value) => (
-          <div className={classes.items}>
-            <GridContainer container key={value.id} text-align-center>
-              <GridItem xs={2} sm={2} md={2}>
-                <p className={classes.overFlow}>{value.email}</p>
-              </GridItem>
-              <GridItem xs={2} sm={2} md={2}>
-                <p className={classes.overFlow}>{value.sdt}</p>
-              </GridItem>
-              <GridItem xs={2} sm={2} md={2}>
-                <p className={classes.overFlow}>{value.ho_ten}</p>
-              </GridItem>
-              <GridItem xs={2} sm={2} md={2}>
-                <p className={classes.overFlow}>{value.dia_chi}</p>
-              </GridItem>
-              <GridItem xs={1} sm={1} md={1}>
-                <p className={classes.overFlow}>
-                  <img
-                    className={classes.imgUrl}
-                    src={API_KEY_IMG + value.avatar}
-                  />
-                </p>
-              </GridItem>
-              <GridItem xs={2} sm={2} md={2}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleUpdateClick(value)}
-                >
-                  <EditIcon />
-                </Button>
-                <Button name={value.id} onClick={handleDeleteUser}>
-                  <DeleteIcon />
-                </Button>
-              </GridItem>
-            </GridContainer>
-          </div>
-        ))
-      }
+      {searchResults.slice(IndexFirstPost, IndexLastPost).map((value) => (
+        <div className={classes.items}>
+          <GridContainer container key={value.id} text-align-center>
+            <GridItem xs={2} sm={2} md={2}>
+              <p className={classes.overFlow}>{value.email}</p>
+            </GridItem>
+            <GridItem xs={2} sm={2} md={2}>
+              <p className={classes.overFlow}>{value.sdt}</p>
+            </GridItem>
+            <GridItem xs={2} sm={2} md={2}>
+              <p className={classes.overFlow}>{value.ho_ten}</p>
+            </GridItem>
+            <GridItem xs={2} sm={2} md={2}>
+              <p className={classes.overFlow}>{value.dia_chi}</p>
+            </GridItem>
+            <GridItem xs={1} sm={1} md={1}>
+              <p className={classes.overFlow}>
+                <img
+                  className={classes.imgUrl}
+                  src={API_KEY_IMG + value.avatar}
+                />
+              </p>
+            </GridItem>
+            <GridItem xs={2} sm={2} md={2}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleUpdateClick(value)}
+              >
+                <EditIcon />
+              </Button>
+              <Button name={value.id} onClick={handleDeleteUser}>
+                <DeleteIcon />
+              </Button>
+            </GridItem>
+          </GridContainer>
+        </div>
+      ))}
       <div className={PaginateStyle.root}>
-        <Pagination className="custom-paginate" count={NumberPage} page={currentPage} onChange={ChangePagination} />
+        <Pagination
+          className="custom-paginate"
+          count={NumberPage}
+          page={currentPage}
+          onChange={ChangePagination}
+        />
       </div>
-    </div >
+    </div>
   );
 }
 

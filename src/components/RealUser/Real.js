@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -10,8 +10,7 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import ShareIcon from "@material-ui/icons/Share";
 import IconButton from "@material-ui/core/IconButton";
 import Gird from "@material-ui/core/Grid";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import StreetviewIcon from "@material-ui/icons/Streetview";
+
 import bgImage from "assets/img/sidebar-2.jpg";
 import { API_KEY } from "../../shared/_constant";
 import { API_KEY_IMG } from "../../shared/_constant";
@@ -31,7 +30,6 @@ import {
   ImportExportTwoTone,
   PageviewOutlined,
   RadioButtonCheckedOutlined,
-  Update,
 } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
@@ -50,46 +48,6 @@ const useStyles = makeStyles({
 });
 
 export default function MediaCard({ item, setIsDelete }) {
-  // const [status, setStatus] = useState(1);
-
-  const UpdateStatus = async (item) => {
-    let trang_thai = 0;
-
-    await axios
-      .put(`http://127.0.0.1:8000/api/nha/${item.id_nha}`, {
-        trang_thai: trang_thai,
-      })
-      .then((res) => {
-        console.log(res);
-        console.log(res.data);
-      });
-
-    console.log(trang_thai);
-  };
-  const UpdateStatus2 = async (item) => {
-    let trang_thai = 2;
-
-    await axios
-      .put(`http://127.0.0.1:8000/api/nha/${item.id_nha}`, {
-        trang_thai: trang_thai,
-      })
-      .then((res) => {
-        console.log(res);
-        console.log(res.data);
-      });
-
-    console.log(trang_thai);
-  };
-
-  useEffect(() => {
-    UpdateStatus(item);
-    UpdateStatus2(item);
-  }, []);
-
-  // useEffect(() => {
-  //   UpdateStatus2(item);
-  // }, []);
-
   let history = useHistory();
 
   const classes = useStyles();
@@ -180,14 +138,6 @@ export default function MediaCard({ item, setIsDelete }) {
           onClick={() => handleDelete(item.id_nha)}
         >
           <Delete />
-        </IconButton>
-        <IconButton>
-          <VisibilityIcon onClick={() => UpdateStatus(item)} />
-          Ẩn Tin
-        </IconButton>
-        <IconButton>
-          <StreetviewIcon onClick={() => UpdateStatus2(item)} />
-          Đã bán
         </IconButton>
       </CardActions>
     </Card>

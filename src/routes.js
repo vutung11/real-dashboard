@@ -28,6 +28,8 @@ import Real from "views/Real/Real.js";
 import RealDetail from "views/RealDetail/RealDetail.js";
 import AddReal from "views/AddReal/AddReal";
 import ViewReal from "views/ViewReal/ViewReal";
+import EditReal from "views/EditReal/EditReal";
+import RealUser from "views/RealUser/RealUser.js";
 
 const dashboards = [
   {
@@ -60,6 +62,20 @@ const dashboards = [
     icon: AppsIcon,
     layout: "/admin",
     component: Real,
+  },
+  {
+    path: "/realuser",
+    name: "RealUser",
+    icon: Person,
+    layout: "/admin",
+    component: RealUser,
+  },
+  {
+    path: "/edit/:id",
+    name: "Edit",
+    icon: AppsIcon,
+    layout: "/admin",
+    component: EditReal,
   },
   {
     path: "/home/:detail",

@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 // @material-ui/core components
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import { Select, MenuItem, NativeSelect } from "@material-ui/core";
 import { Tabs, Tab, AppBar } from "@material-ui/core";
+import { AirplaySharp, Delete } from "@material-ui/icons";
+import IconButton from "@material-ui/core/IconButton";
 
 // core components
 import GridItem from "components/Grid/GridItem.js";
@@ -19,9 +21,7 @@ import CardFooter from "components/Card/CardFooter.js";
 import avatar from "assets/img/faces/marc.jpg";
 import Image from "material-ui-image";
 import banner from "assets/img/cover.jpeg";
-// import { MAP_BOX_API } from "assets/jss/_constant";
-// import mapboxgl from "mapbox-gl/dist/mapbox-gl-csp";
-// import MapboxWorker from "worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker"; // Load worker code separately with worker-loader
+
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import TextField from "@material-ui/core/TextField";
@@ -33,10 +33,9 @@ import "./styles.css";
 import { FormControl } from "@material-ui/core";
 import { setConstantValue } from "typescript";
 import axios from "axios";
-import { useHistory } from "react-router";
-// mapboxgl.workerClass = MapboxWorker; // Wire up loaded worker to be used instead of the default
-// mapboxgl.accessToken = MAP_BOX_API;
-
+import { useHistory, useParams } from "react-router";
+import { API_KEY, API_KEY_IMG } from "../../shared/_constant";
+import _ from "lodash";
 const styles = {
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
@@ -44,6 +43,7 @@ const styles = {
     fontSize: "14px",
     marginTop: "0",
     marginBottom: "0",
+    display: "flex",
   },
   cardTitleWhite: {
     color: "#FFFFFF",
@@ -58,6 +58,9 @@ const styles = {
     marginTop: 0,
   },
   name: {
+    color: "red",
+  },
+  buttonDelete: {
     color: "red",
   },
 };
@@ -104,29 +107,28 @@ const BootstrapInput = withStyles((theme) => ({
 }))(InputBase);
 export default function UserProfile() {
   const history = useHistory();
+  const [dataFetch, setDataFetch] = useState([]);
+  const { id } = useParams();
   const classes = useStyles();
   const [index, setIndex] = useState(0);
   const [country, setCountry] = React.useState("");
   const [val, setVal] = React.useState({});
   const [fileBanner, setFilerBanner] = useState("");
   const [listImages, setListImages] = useState([]);
-  // const [zoom, setZoom] = useState(15);
-  // const [lon, setLon] = useState(0);
-  // const [lat, setLat] = useState(0);
-  // const mapContainer = useRef();
   const [valInput, setValInput] = useState({
     thanhpho: "",
     quanhuyen: "",
     phuongxa: "",
     duong: "",
     sonha: "",
-    hinhthuc: "",
     loainha: "",
     sophong: "",
     sotoilet: "",
     dientich: "",
     gia: "",
     chitiet: "",
+    banner: "",
+    hinh: [],
   });
   const [listThanhPho, setListThanhPho] = useState([]);
   const [listQuanHuyen, setListQuanHuyen] = useState([]);
@@ -154,30 +156,6 @@ export default function UserProfile() {
     );
     setListDuong(res.data.duong);
   };
-
-  // useEffect(() => {
-  //   // navigator.geolocation.getCurrentPosition(function (position) {
-  //   //   setLng(position.coords.longitude);
-  //   //   setLat(position.coords.latitude);
-  //   // });
-  //   const map = new mapboxgl.Map({
-  //     container: mapContainer.current,
-  //     style: "mapbox://styles/mapbox/streets-v11",
-  //     center: [lon, lat],
-  //     zoom: zoom,
-  //   });
-
-  //   let marker = new mapboxgl.Marker().setLngLat([lon, lat]).addTo(map);
-
-  //   map.on("click", function (e) {
-  //     marker.remove();
-  //     setLng(e.lngLat.lon);
-  //     setLat(e.lngLat.lat);
-  //     marker = new mapboxgl.Marker().setLngLat([lon, lat]).addTo(map);
-  //   });
-
-  //   return () => map.remove();
-  // });
 
   useEffect(() => {
     fetchDataListThanhPho();
@@ -214,10 +192,12 @@ export default function UserProfile() {
     });
   };
   const onFinish = async (e) => {
+    console.log(fileBanner.name);
+    console.log(valInput.hinh.toString());
     e.preventDefault();
     console.log(valInput);
     const postData = {
-      id_khach_hang: 16,
+      id_khach_hang: 15,
       hinh_thuc: valInput.hinhthuc,
       loai_nha: valInput.loainha,
       lat: 1,
@@ -235,43 +215,172 @@ export default function UserProfile() {
       so_nha: valInput.sonha,
       trang_thai: 1,
       duyet: 0,
-      // images: listImages,
+      hinh: valInput.hinh.toString(),
     };
-    var form_data = new FormData();
-
-    for (var key in postData) {
-      form_data.append(key, postData[key]);
-      console.log(form_data);
-    }
-    for (const file of listImages) {
-      form_data.append("images[]", file);
-    }
-    console.log(form_data.getAll("images[]"), "form_data");
-    // console.log(postData);
-    try {
-      await axios.post("http://127.0.0.1:8000/api/nha", form_data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      history.push("/admin/real");
-    } catch (error) {
-      console.log(error);
-    }
+    console.log(fileBanner);
+    console.log(postData);
+    console.log(id);
+    axios.put(`http://127.0.0.1:8000/api/nha/${id}`, postData).then((res) => {
+      console.log(res);
+      console.log(res.data);
+    });
   };
 
   const uploadBanner = async (e) => {
     const file = e.target.files[0];
-    setFilerBanner(file);
-    console.log(URL.createObjectURL(file));
+    var bodyFormData = new FormData();
+    bodyFormData.append("link", file);
+    console.log(file);
+    try {
+      const res = await axios.post(
+        "http://127.0.0.1:8000/api/hinh",
+        bodyFormData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(res.data);
+      setFilerBanner(res.data.link);
+    } catch (error) {
+      console.log(error);
+    }
   };
   const uploadList = async (e) => {
-    console.log(e.target.files);
-    const file = e.target.files;
-    // console.log(URL.createObjectURL(file));
-    console.log(file[0], file);
-    setListImages([...listImages, ...file]);
+    const fileList = e.target.files;
+    // console.log(fileList);
+    const listLink = [];
+    for (let i = 0; i < fileList.length; i++) {
+      const uploadItem = async () => {
+        console.log(fileList[i]);
+        var bodyFormData = new FormData();
+        bodyFormData.append("link", fileList[i]);
+        try {
+          const res = await axios.post(
+            "http://127.0.0.1:8000/api/hinh",
+            bodyFormData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          await listLink.push(res.data.link);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      await uploadItem();
+    }
+    console.log(...listLink);
+    if (listLink.length > 0) {
+      console.log(listLink);
+      setValInput((preState) => {
+        return { ...preState, hinh: [...preState.hinh, ...listLink] };
+      });
+    }
   };
+  // const uploadList = async (e) => {
+  //   const file = e.target.files[0];
+  //   var bodyFormData = new FormData();
+  //   bodyFormData.append("link", file);
+  //   console.log(bodyFormData);
+  //   try {
+  //     const res = await axios.post(
+  //       "http://127.0.0.1:8000/api/hinh",
+  //       bodyFormData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+  //     // console.log(res.data);
+  //     // setValInput((preState) => {
+  //     //   return { ...preState, hinh: [...preState.hinh, res.data.link] };
+  //     // });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  const deleteImg = async (linkImg) => {
+    let x = valInput.hinh;
+    console.log(linkImg);
+    _.remove(x, (e) => e == linkImg);
+    console.log(x);
+    setValInput({ ...valInput, hinh: x });
+  };
+  const fetchData = async () => {
+    const res1 = await axios.get("http://127.0.0.1:8000/api/dia_chi");
+    setListThanhPho(res1.data.thanh_pho);
+    const res2 = await axios.get(`${API_KEY}/nha/${id}`);
+    console.log(res2);
+    console.log(11111111111);
+    // let valThanhPho = "";
+    if (res2.data.nha) {
+      let valThanhPho = _.find(res1.data.thanh_pho, (e) => {
+        return e._name == res2.data.nha.thanh_pho;
+      }).id;
+      const res3 = await axios.get(
+        `http://127.0.0.1:8000/api/dia_chi/${valThanhPho}`
+      );
+      const valQuanHuyen = _.find(res3.data.quan, (e) => {
+        return e._name == res2.data.nha.quan;
+      }).id;
+      const res4 = await axios.get(
+        `http://127.0.0.1:8000/api/dia_chi/${valThanhPho}/${valQuanHuyen}`
+      );
+      const valDuong = _.find(res4.data.duong, (e) => {
+        return e._name == res2.data.nha.duong;
+      }).id;
+      const valPhuong = _.find(res4.data.phuong, (e) => {
+        return e._name == res2.data.nha.phuong;
+      }).id;
+      setFilerBanner(res2.data.nha.banner);
+
+      setValInput((preState) => {
+        return {
+          ...preState,
+          thanhpho: valThanhPho,
+          quanhuyen: valQuanHuyen,
+          duong: valDuong,
+          phuongxa: valPhuong,
+          sonha: res2.data.nha.so_nha,
+          loainha: res2.data.nha.loai_nha,
+          hinhthuc: res2.data.nha.hinh_thuc,
+          sophong: res2.data.nha.so_phong,
+          sotoilet: res2.data.nha.so_toilet,
+          dientich: res2.data.nha.dien_tich,
+          gia: res2.data.nha.gia,
+          chitiet: res2.data.nha.mo_ta,
+          hinh: res2.data.nha.hinh ? res2.data.nha.hinh.split(",") : [],
+        };
+      });
+    }
+
+    // console.log();
+    // setListImages();
+    //   setValInput({
+    //   thanhpho: res.data.nha.thanh_pho,
+    //   quanhuyen: res.data.nha.quan,
+    //   phuongxa: res.data.nha.phuong,
+    //   duong: res.data.nha.duong,
+    //   loainha: res.data.nha.loai_nha,
+    //   sophong: res.data.nha.so_phong,
+    //   sotoilet: res.data.nha.so_toilet,
+    //   dientich: res.data.nha.dien_tich,
+    //   gia: res.data.nha.gia,
+    //   chitiet: res.data.nha.chitiet,
+    // })
+  };
+  useEffect(() => {
+    fetchData();
+    console.log(id);
+  }, []);
+  useEffect(() => {
+    console.log(listImages);
+  }, [listImages]);
 
   return (
     <div>
@@ -413,11 +522,12 @@ export default function UserProfile() {
                     <option value="" disabled>
                       Chọn
                     </option>
-                    <option value={1}>Nhà Phố</option>
-                    <option value={2}>Chung Cư</option>
+                    <option value={1}>Nhà phố</option>
+                    <option value={2}>Chung cư</option>
                     <option value={3}>Đất</option>
                   </NativeSelect>
                 </GridItem>
+
                 <GridItem style={{ marginTop: 12 }}>
                   <InputLabel style={{ marginBottom: 5 }}>Số phòng</InputLabel>
                   <TextField
@@ -483,13 +593,7 @@ export default function UserProfile() {
           />
         </GridItem>
       </GridContainer>
-      {/* <GridContainer>
-        <GridItem>
-          <Card className={classes.cardSize}>
-            <div ref={mapContainer} className="map-container"></div>
-          </Card>
-        </GridItem>
-      </GridContainer> */}
+
       <GridContainer>
         <GridItem xs={12} sm={4} style={{ marginTop: -30 }}>
           <Card>
@@ -497,15 +601,25 @@ export default function UserProfile() {
               <GridItem xs={12} sm={6}>
                 <Button variant="contained" component="label">
                   Ảnh Banner
-                  <input type="file" hidden onChange={uploadBanner} />
+                  <input
+                    type="file"
+                    hidden
+                    name="banner"
+                    onChange={uploadBanner}
+                  />
                 </Button>
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
-                    <img
-                      className="banner"
-                      src={fileBanner ? URL.createObjectURL(fileBanner) : ""}
-                      alt=""
-                    ></img>
+                    {fileBanner ? (
+                      <img
+                        className="banner"
+                        src={`${API_KEY_IMG}${fileBanner}`}
+                        // src={`${API_KEY_IMG}${valInput.banner}`}
+                        alt=""
+                      ></img>
+                    ) : (
+                      ""
+                    )}
                   </GridItem>
                 </GridContainer>
               </GridItem>
@@ -525,18 +639,25 @@ export default function UserProfile() {
                     hidden
                     multiple
                     onChange={(e) => {
-                      console.log(typeof listImages);
                       uploadList(e);
                     }}
                   />
                 </Button>
                 <GridContainer>
-                  {listImages.map((e) => {
+                  {valInput.hinh.map((e) => {
                     return (
                       <GridItem xs={4}>
+                        <p onClick={() => deleteImg(e)}>X</p>
+                        {/* <IconButton
+                          className={classes.buttonDelete}
+                          size="small"
+                        >
+                          <Delete onClick={() => deleteImg(e)} />
+                        </IconButton> */}
                         <Image
                           className="imgUrl"
-                          src={URL.createObjectURL(e)}
+                          // src={URL.createObjectURL(e)}
+                          src={`${API_KEY_IMG}${e}`}
                         />
                       </GridItem>
                     );
