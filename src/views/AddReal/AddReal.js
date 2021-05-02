@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import ReactDOM from "react-dom";
 // @material-ui/core components
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -8,6 +11,7 @@ import { Tabs, Tab, AppBar } from "@material-ui/core";
 
 // core components
 import GridItem from "components/Grid/GridItem.js";
+import Grid from "@material-ui/core/Grid";
 import GridContainer from "components/Grid/GridContainer.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
@@ -19,9 +23,10 @@ import CardFooter from "components/Card/CardFooter.js";
 import avatar from "assets/img/faces/marc.jpg";
 import Image from "material-ui-image";
 import banner from "assets/img/cover.jpeg";
-// import { MAP_BOX_API } from "assets/jss/_constant";
-// import mapboxgl from "mapbox-gl/dist/mapbox-gl-csp";
-// import MapboxWorker from "worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker"; // Load worker code separately with worker-loader
+import { MAP_BOX_API } from "assets/jss/_constant";
+import mapboxgl from "mapbox-gl/dist/mapbox-gl-csp";
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import MapboxWorker from "worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import TextField from "@material-ui/core/TextField";
@@ -34,8 +39,8 @@ import { FormControl } from "@material-ui/core";
 import { setConstantValue } from "typescript";
 import axios from "axios";
 import { useHistory } from "react-router";
-// mapboxgl.workerClass = MapboxWorker; // Wire up loaded worker to be used instead of the default
-// mapboxgl.accessToken = MAP_BOX_API;
+mapboxgl.workerClass = MapboxWorker;
+mapboxgl.accessToken = MAP_BOX_API;
 
 const styles = {
   cardCategoryWhite: {
@@ -59,6 +64,15 @@ const styles = {
   },
   name: {
     color: "red",
+  },
+  cardSize: {
+    width: "100%",
+    height: 400,
+    // top: 0,
+    // bottom: 0,
+  },
+  sticky: {
+    position: "sticky",
   },
 };
 
@@ -110,10 +124,11 @@ export default function UserProfile() {
   const [val, setVal] = React.useState({});
   const [fileBanner, setFilerBanner] = useState("");
   const [listImages, setListImages] = useState([]);
-  // const [zoom, setZoom] = useState(15);
-  // const [lon, setLon] = useState(0);
-  // const [lat, setLat] = useState(0);
-  // const mapContainer = useRef();
+  const mapContainer = useRef();
+  const [lng, setLng] = useState(0);
+  const [lat, setLat] = useState(0);
+  const [zoom, setZoom] = useState(15);
+
   const [valInput, setValInput] = useState({
     thanhpho: "",
     quanhuyen: "",
@@ -155,29 +170,29 @@ export default function UserProfile() {
     setListDuong(res.data.duong);
   };
 
-  // useEffect(() => {
-  //   // navigator.geolocation.getCurrentPosition(function (position) {
-  //   //   setLng(position.coords.longitude);
-  //   //   setLat(position.coords.latitude);
-  //   // });
-  //   const map = new mapboxgl.Map({
-  //     container: mapContainer.current,
-  //     style: "mapbox://styles/mapbox/streets-v11",
-  //     center: [lon, lat],
-  //     zoom: zoom,
-  //   });
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      setLng(position.coords.longitude);
+      setLat(position.coords.latitude);
+    });
+    const map = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: "mapbox://styles/mapbox/streets-v11",
+      center: [lng, lat],
+      zoom: zoom,
+    });
 
-  //   let marker = new mapboxgl.Marker().setLngLat([lon, lat]).addTo(map);
+    let marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
 
-  //   map.on("click", function (e) {
-  //     marker.remove();
-  //     setLng(e.lngLat.lon);
-  //     setLat(e.lngLat.lat);
-  //     marker = new mapboxgl.Marker().setLngLat([lon, lat]).addTo(map);
-  //   });
+    map.on("click", function (e) {
+      marker.remove();
+      setLng(e.lngLat.lng);
+      setLat(e.lngLat.lat);
+      marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+    });
 
-  //   return () => map.remove();
-  // });
+    return () => map.remove();
+  });
 
   useEffect(() => {
     fetchDataListThanhPho();
@@ -217,11 +232,11 @@ export default function UserProfile() {
     e.preventDefault();
     console.log(valInput);
     const postData = {
-      id_khach_hang: 16,
+      id_khach_hang: 15,
       hinh_thuc: valInput.hinhthuc,
       loai_nha: valInput.loainha,
-      lat: 1,
-      lon: 2,
+      lat: lat,
+      lon: lng,
       gia: valInput.gia,
       dien_tich: valInput.dientich,
       so_phong: valInput.sophong,
@@ -254,7 +269,7 @@ export default function UserProfile() {
           "Content-Type": "multipart/form-data",
         },
       });
-      history.push("/admin/real");
+      // history.push("/admin/real");
     } catch (error) {
       console.log(error);
     }
@@ -275,6 +290,15 @@ export default function UserProfile() {
 
   return (
     <div>
+      <GridContainer>
+        <GridItem xs={12} sm={12} md={12}>
+          <Card className={classes.cardSize}>
+            <div ref={mapContainer} className="map-container"></div>
+          </Card>
+          <Grid container spacing={3} item />
+        </GridItem>
+      </GridContainer>
+
       <GridContainer>
         <GridItem xs={12} sm={4}>
           <Card xs={12} sm={4}>
@@ -473,7 +497,7 @@ export default function UserProfile() {
         <GridItem xs={12} sm={8}>
           <TextareaAutosize
             style={{ minWidth: "100%", marginBottom: 11, marginTop: 30 }}
-            rows={24}
+            rows={34}
             cols={108}
             aria-label="maximum height"
             placeholder="Mô tả chi tiết"
@@ -481,8 +505,40 @@ export default function UserProfile() {
             onChange={onChangeInput}
             value={valInput.chitiet}
           />
+          {/* <CKEditor
+            style={{ minWidth: "100%", marginBottom: 11, marginTop: 30 }}
+            rows={24}
+            cols={108}
+            aria-label="maximum height"
+            placeholder="Mô tả chi tiết"
+            name="chitiet"
+            onChange={onChangeInput}
+            value={valInput.chitiet}
+            editor={ClassicEditor}
+            data="<p>Hello from CKEditor 5!</p>"
+            // onReady={(editor) => {
+            //   // You can store the "editor" and use when it is needed.
+            //   console.log("Editor is ready to use!", editor);
+            // }}
+            // onChange={(event, editor) => {
+            //   const data = editor.getData();
+            //   console.log({ event, editor, data });
+            // }}
+            // onBlur={(event, editor) => {
+            //   console.log("Blur.", editor);
+            // }}
+            // onFocus={(event, editor) => {
+            //   console.log("Focus.", editor);
+            // }}
+          /> */}
         </GridItem>
       </GridContainer>
+
+      {/* <GridContainer>
+        <GridItem xs={12} sm={9}>
+          <div ref={mapContainer} className="map-container"></div>
+        </GridItem>
+      </GridContainer> */}
       {/* <GridContainer>
         <GridItem>
           <Card className={classes.cardSize}>

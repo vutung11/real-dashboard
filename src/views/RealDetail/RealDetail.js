@@ -14,16 +14,15 @@ import bgImage from "assets/img/sidebar-2.jpg";
 import GridListImage from "components/GridListImage/GridListImage";
 import ReactMapGL from "react-map-gl";
 import axios from "axios";
-// import "mapbox-gl/dist/mapbox-gl.css";
 import { MAP_BOX_API } from "assets/jss/_constant";
 import mapboxgl from "mapbox-gl/dist/mapbox-gl-csp";
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import MapboxWorker from "worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker"; // Load worker code separately with worker-loader
+import MapboxWorker from "worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker";
 import { API_KEY } from "../../shared/_constant";
 import { API_KEY_IMG } from "../../shared/_constant";
 import { Button, Typography } from "@material-ui/core";
 
-mapboxgl.workerClass = MapboxWorker; // Wire up loaded worker to be used instead of the default
+mapboxgl.workerClass = MapboxWorker;
 mapboxgl.accessToken = MAP_BOX_API;
 
 const styles = {
@@ -50,6 +49,9 @@ const styles = {
 
   sticky: {
     position: "sticky",
+  },
+  cardMota: {
+    textAlign: "justify",
   },
 };
 
@@ -98,22 +100,20 @@ const RealDetail = (props) => {
     //   setLng(position.coords.longitude);
     //   setLat(position.coords.latitude);
     // });
+    // console.log(lat, lng);
     const map = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/streets-v11",
       center: [lng, lat],
       zoom: zoom,
     });
-
     let marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
-
     map.on("click", function (e) {
       marker.remove();
       setLng(e.lngLat.lng);
       setLat(e.lngLat.lat);
       marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
     });
-
     return () => map.remove();
   });
 
@@ -149,7 +149,7 @@ const RealDetail = (props) => {
                 src={realData.nha ? API_KEY_IMG + realData.nha.banner : ""}
               ></img>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12}>
               {listHinh.map((item) => {
                 return (
                   <img className="banner" src={`${API_KEY_IMG}${item}`}></img>
@@ -159,22 +159,6 @@ const RealDetail = (props) => {
             <Grid></Grid>
           </CardBody>
         </Card>
-        {/* <Grid item xs={6}>
-                <img src={realData.hinh ? 
-                `${realData.hinh.map((value) => (
-                  <div key={value.id}>
-                    {value.link}
-                  </div>
-                ))}` : ''}></img>
-              </Grid> */}
-        {/* {realData.map((value) => (
-                <Grid item xs={6} key={value.hinh}>
-                  <img src={value.link}></img>
-                </Grid>
-              ))} */}
-        {/* <GridContainer>
-          <img className="banner" src={listHinh[0]}></img>
-        </GridContainer> */}
       </GridItem>
       <GridItem xs={12} sm={12} md={4}>
         <Card profile>
@@ -200,16 +184,24 @@ const RealDetail = (props) => {
                   " toilet"
                 : ""}
             </h3>
-            <p className={classes.cardTitle}>
-              {realData.nha ? +realData.nha.mo_ta : ""}
-            </p>
+          </CardBody>
+
+          <CardBody profile>
+            <h3 className={classes.cardMota}>
+              {realData.nha ? realData.nha.mo_ta : ""}
+            </h3>
           </CardBody>
         </Card>
       </GridItem>
-      <GridItem>
+      {/* <Grid>
+        <h3 className={classes.cardTitle}>
+          {realData.nha ? +realData.nha.mo_ta + " Tỷ" : ""}
+        </h3>
+      </Grid> */}
+      <Grid>
         <Button
           variant="contained"
-          color="primary"
+          color="second"
           style={{ marginRight: 20, padding: 10 }}
         >
           Quay Lại
@@ -222,7 +214,7 @@ const RealDetail = (props) => {
         >
           Duyệt Nhà
         </Button>
-      </GridItem>
+      </Grid>
     </GridContainer>
   );
 };

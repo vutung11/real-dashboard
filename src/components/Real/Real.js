@@ -10,7 +10,8 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import ShareIcon from "@material-ui/icons/Share";
 import IconButton from "@material-ui/core/IconButton";
 import Gird from "@material-ui/core/Grid";
-import VisibilityIcon from "@material-ui/icons/Visibility";
+import EditIcon from "@material-ui/icons/Edit";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import StreetviewIcon from "@material-ui/icons/Streetview";
 import bgImage from "assets/img/sidebar-2.jpg";
 import { API_KEY } from "../../shared/_constant";
@@ -24,6 +25,7 @@ import {
   Container,
   TableContainer,
   TableHead,
+  Button,
 } from "@material-ui/core";
 import {
   Delete,
@@ -39,13 +41,37 @@ import axios from "axios";
 const useStyles = makeStyles({
   root: {
     maxWidth: 345,
+    position: "relative",
   },
   media: {
     height: 140,
   },
+  image: {
+    opacity: 1,
+    display: "block",
+    width: "100%",
+    height: "auto",
+    transition: ".5s ease",
+    backfaceVisibility: "hidden",
+  },
   imgUrl: {
     maxWidth: "100%",
-    maxHeight: "220px",
+    maxHeight: "150px",
+  },
+  delete: {
+    color: "red",
+  },
+
+  buttonCard: {
+    // zIndex: "9999",
+    // transition: "0.5s ease",
+    // opacity: "0",
+    // position: "absolute",
+    // top: "50%",
+    // left: "50%",
+    // transform: "translate(-50%, -50%)",
+    // msTransform: "translate(-50%, -50%)",
+    backgroundColor: "#C0C0C0",
   },
 });
 
@@ -102,92 +128,59 @@ export default function MediaCard({ item, setIsDelete }) {
     setIsDelete();
   };
   return (
-    // <Container className={classes.root}>
-    //   <Gird container>
-    //     <Gird item sm={3}>
-    //       <Card></Card>
-    //     </Gird>
-    //   </Gird>
-    //   <CardActionArea onClick={() => handleRealClick(item)}>
-    //     <img
-    //       // style={{ width: "100%" }}
-    //       className={classes.imgUrl}
-    //       src={API_KEY_IMG + item.banner}
-    //     />
-    //     <CardContent>
-    //       {/* <Typography gutterBottom variant="h5" component="h2"></Typography> */}
-    //       <Typography variant="subtitle1">
-    //         {/* {item.mo_ta} */}
-    //         Cần bán gấp căn nhà 2 mặt tiền Quận 2
-    //         {/* {item.thanh_pho + "/" + item.phuong + "/" + item.quan} */}
-    //       </Typography>
-    //       <Typography variant="h6" color="textSecondary" component="span">
-    //         {item.dien_tich + "m2 " + " /" + item.loai_nha + item.hinh_thuc}
-    //       </Typography>
-    //     </CardContent>
-    //   </CardActionArea>
-    //   <CardActions>
-    //     <Typography variant="h6" color="textSecondary" component="span">
-    //       {item.gia + " đ"}
-    //     </Typography>
-    //   </CardActions>
-    //   <IconButton aria-label="add to favorites">
-    //     <FindInPageOutlined />
-    //   </IconButton>
-    //   <IconButton aria-label="share">
-    //     <Delete />
-    //   </IconButton>
-    // </Container>
     <Card className={classes.root}>
-      <CardActionArea onClick={() => handleRealClick(item)}>
+      <CardActionArea
+        className={classes.image}
+        onClick={() => handleRealClick(item)}
+      >
         <img
           style={{ width: "100%" }}
           className={classes.imgUrl}
           src={API_KEY_IMG + item.banner}
         />
         <CardContent>
+          <Typography variant="h6" component="h1">
+            {item.loai_nha +
+              "/ " +
+              item.gia +
+              " tỷ" +
+              "/ " +
+              item.dien_tich +
+              "m2"}
+          </Typography>
+          {/* <Typography variant="h6" component="h2">
+            {item.gia + " tỷ" + " / " + item.dien_tich + "m2"}
+          </Typography> */}
           <Typography gutterBottom variant="body2" component="h2">
-            {"Số :  " +
-              item.so_nha +
-              " Đường " +
-              item.duong +
-              ", Phường " +
-              item.phuong +
-              ", " +
-              item.quan +
-              ", Thành Phố " +
-              item.thanh_pho}
+            {item.quan + ", Thành Phố " + item.thanh_pho}
           </Typography>
-          <Typography variant="h6" component="h2">
-            {item.gia + " tỷ"}
-          </Typography>
-          <Typography variant="h5" component="h2">
+
+          {/* <Typography variant="h5" component="h2">
             {item.dien_tich + "m2 / " + item.hinh_thuc}
-          </Typography>
+          </Typography> */}
         </CardContent>
       </CardActionArea>
-      <CardActions>
+      <CardActions className={classes.buttonCard}>
+        <Button color="white" type="submit" onClick={() => UpdateStatus(item)}>
+          Ẩn Tin
+        </Button>
+        <Button color="white" type="submit" onClick={() => UpdateStatus2(item)}>
+          Đã Bán
+        </Button>
         <IconButton
           size="small"
           color="primary"
           onClick={() => history.push(`/admin/edit/${item.id_nha}`)}
         >
-          <FindInPageOutlined />
+          <EditIcon />
         </IconButton>
         <IconButton
           size="small"
           aria-label="delete"
+          className={classes.delete}
           onClick={() => handleDelete(item.id_nha)}
         >
           <Delete />
-        </IconButton>
-        <IconButton>
-          <VisibilityIcon onClick={() => UpdateStatus(item)} />
-          Ẩn Tin
-        </IconButton>
-        <IconButton>
-          <StreetviewIcon onClick={() => UpdateStatus2(item)} />
-          Đã bán
         </IconButton>
       </CardActions>
     </Card>

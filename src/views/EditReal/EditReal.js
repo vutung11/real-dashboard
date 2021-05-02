@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 // @material-ui/core components
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import { Select, MenuItem, NativeSelect } from "@material-ui/core";
 import { Tabs, Tab, AppBar } from "@material-ui/core";
-import { AirplaySharp, Delete } from "@material-ui/icons";
+import { AirplaySharp, Delete, DeleteOutline } from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
+import DeleteTwoToneIcon from "@material-ui/icons/DeleteTwoTone";
+import Grid from "@material-ui/core/Grid";
 
 // core components
 import GridItem from "components/Grid/GridItem.js";
@@ -26,7 +28,10 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import TextField from "@material-ui/core/TextField";
 import InputBase from "@material-ui/core/InputBase";
-
+import { MAP_BOX_API } from "assets/jss/_constant";
+import mapboxgl from "mapbox-gl/dist/mapbox-gl-csp";
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import MapboxWorker from "worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 
 import "./styles.css";
@@ -36,6 +41,8 @@ import axios from "axios";
 import { useHistory, useParams } from "react-router";
 import { API_KEY, API_KEY_IMG } from "../../shared/_constant";
 import _ from "lodash";
+mapboxgl.workerClass = MapboxWorker;
+mapboxgl.accessToken = MAP_BOX_API;
 const styles = {
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
@@ -61,7 +68,15 @@ const styles = {
     color: "red",
   },
   buttonDelete: {
+    zIndex: "9999",
+    fontWeight: "bold",
+    position: "absolute",
+    marginLeft: "190px",
     color: "red",
+  },
+  cardSize: {
+    width: "100%",
+    height: 400,
   },
 };
 
@@ -115,6 +130,10 @@ export default function UserProfile() {
   const [val, setVal] = React.useState({});
   const [fileBanner, setFilerBanner] = useState("");
   const [listImages, setListImages] = useState([]);
+  const mapContainer = useRef();
+  const [lng, setLng] = useState(0);
+  const [lat, setLat] = useState(0);
+  const [zoom, setZoom] = useState(15);
   const [valInput, setValInput] = useState({
     thanhpho: "",
     quanhuyen: "",
@@ -167,7 +186,23 @@ export default function UserProfile() {
     fetchDataListPhuongXa();
     fetchDataListDuong();
   }, [valInput.quanhuyen]);
+  // useEffect(() => {
 
+  //    const map = new mapboxgl.Map({
+  //     container: mapContainer.current,
+  //     style: "mapbox://styles/mapbox/streets-v11",
+  //     center: [lng, lat],
+  //     zoom: zoom,
+  //   });
+  //   let marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+  //   map.on("click", function (e) {
+  //     marker.remove();
+  //     setLng(e.lngLat.lng);
+  //     setLat(e.lngLat.lat);
+  //     marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+  //   });
+  //   return () => map.remove();
+  // });
   const onTabClick = (e, index) => {
     setIndex(index);
   };
@@ -200,8 +235,8 @@ export default function UserProfile() {
       id_khach_hang: 15,
       hinh_thuc: valInput.hinhthuc,
       loai_nha: valInput.loainha,
-      lat: 1,
-      lon: 2,
+      lat: lat,
+      lon: lng,
       gia: valInput.gia,
       dien_tich: valInput.dientich,
       so_phong: valInput.sophong,
@@ -223,6 +258,8 @@ export default function UserProfile() {
     axios.put(`http://127.0.0.1:8000/api/nha/${id}`, postData).then((res) => {
       console.log(res);
       console.log(res.data);
+      // setLng(res.data.nha.lon);
+      // setLat(res.data.nha.lat);
     });
   };
 
@@ -315,8 +352,6 @@ export default function UserProfile() {
     const res1 = await axios.get("http://127.0.0.1:8000/api/dia_chi");
     setListThanhPho(res1.data.thanh_pho);
     const res2 = await axios.get(`${API_KEY}/nha/${id}`);
-    console.log(res2);
-    console.log(11111111111);
     // let valThanhPho = "";
     if (res2.data.nha) {
       let valThanhPho = _.find(res1.data.thanh_pho, (e) => {
@@ -357,6 +392,8 @@ export default function UserProfile() {
           hinh: res2.data.nha.hinh ? res2.data.nha.hinh.split(",") : [],
         };
       });
+
+      return res2;
     }
 
     // console.log();
@@ -374,9 +411,27 @@ export default function UserProfile() {
     //   chitiet: res.data.nha.chitiet,
     // })
   };
-  useEffect(() => {
-    fetchData();
-    console.log(id);
+  useEffect(async () => {
+    const {
+      data: { nha },
+    } = await fetchData();
+    const map = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: "mapbox://styles/mapbox/streets-v11",
+      center: [nha.lon, nha.lat],
+      zoom: zoom,
+    });
+    let marker = new mapboxgl.Marker().setLngLat([nha.lon, nha.lat]).addTo(map);
+    map.on("click", function (e) {
+      marker.remove();
+      setLng(e.lngLat.lng);
+      setLat(e.lngLat.lat);
+      marker = new mapboxgl.Marker()
+        .setLngLat([e.lngLat.lng, e.lngLat.lat])
+        .addTo(map);
+    });
+
+    return () => map.remove();
   }, []);
   useEffect(() => {
     console.log(listImages);
@@ -384,6 +439,14 @@ export default function UserProfile() {
 
   return (
     <div>
+      <GridContainer>
+        <GridItem xs={12} sm={12} md={12}>
+          <Card className={classes.cardSize}>
+            <div ref={mapContainer} className="map-container"></div>
+          </Card>
+          <Grid container spacing={3} item />
+        </GridItem>
+      </GridContainer>
       <GridContainer>
         <GridItem xs={12} sm={4}>
           <Card xs={12} sm={4}>
@@ -598,7 +661,7 @@ export default function UserProfile() {
         <GridItem xs={12} sm={4} style={{ marginTop: -30 }}>
           <Card>
             <CardBody>
-              <GridItem xs={12} sm={6}>
+              <GridItem xs={12} sm={12}>
                 <Button variant="contained" component="label">
                   Ảnh Banner
                   <input
@@ -627,7 +690,7 @@ export default function UserProfile() {
           </Card>
         </GridItem>
 
-        <GridItem xs={12} sm={8} style={{}}>
+        <GridItem xs={12} sm={8}>
           <Card className={classes.cardMargin}>
             <CardBody>
               <GridItem xs={12} sm={12}>
@@ -647,13 +710,14 @@ export default function UserProfile() {
                   {valInput.hinh.map((e) => {
                     return (
                       <GridItem xs={4}>
-                        <p onClick={() => deleteImg(e)}>X</p>
-                        {/* <IconButton
+                        {/* <p onClick={() => deleteImg(e)}>X</p> */}
+                        <IconButton
                           className={classes.buttonDelete}
                           size="small"
+                          // color="primary"
                         >
-                          <Delete onClick={() => deleteImg(e)} />
-                        </IconButton> */}
+                          <DeleteTwoToneIcon onClick={() => deleteImg(e)} />
+                        </IconButton>
                         <Image
                           className="imgUrl"
                           // src={URL.createObjectURL(e)}
@@ -662,42 +726,14 @@ export default function UserProfile() {
                       </GridItem>
                     );
                   })}
-                  {/* <GridItem xs={4}>
-                    <Image className="imgUrl" src={banner} />
-                  </GridItem>
-                  <GridItem xs={4}>
-                    <Image className="imgUrl" src={banner} />
-                  </GridItem>
-                  <GridItem xs={4}>
-                    <Image className="imgUrl" src={banner} />
-                  </GridItem>
-                  <GridItem xs={4}>
-                    <Image className="imgUrl" src={banner} />
-                  </GridItem>
-                  <GridItem xs={4}>
-                    <Image className="imgUrl" src={banner} />
-                  </GridItem>
-                  <GridItem xs={4}>
-                    <Image className="imgUrl" src={banner} />
-                  </GridItem> */}
                 </GridContainer>
               </GridItem>
             </CardBody>
           </Card>
           <GridContainer container justify="flex-end">
-            {/* <GridItem>
-              <Button color="secondary" type="submit" onClick={onFinish}>
-                Quay Lại
-              </Button>
-            </GridItem>
             <GridItem>
               <Button color="primary" type="submit" onClick={onFinish}>
-                Duyệt Nhà
-              </Button>
-            </GridItem> */}
-            <GridItem>
-              <Button color="primary" type="submit" onClick={onFinish}>
-                Thêm Nhà
+                Sửa Nhà
               </Button>
             </GridItem>
           </GridContainer>
