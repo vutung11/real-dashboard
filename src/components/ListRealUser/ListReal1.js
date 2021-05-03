@@ -9,12 +9,25 @@ import CustomInput from "components/CustomInput/CustomInput.js";
 import Search from "@material-ui/icons/Search";
 import Select from "@material-ui/core/Select";
 
-import Pagination from "@material-ui/lab/Pagination";
 import axios from "axios";
 
 import { API_KEY } from "../../shared/_constant";
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    height: 400,
+    width: "100%",
+  },
+  control: {
+    padding: theme.spacing(2),
+  },
+}));
+
 function removeVietnameseTones(str) {
+  console.log(str);
   str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
   str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
   str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
@@ -39,80 +52,60 @@ function removeVietnameseTones(str) {
   str = str.trim();
   // Remove punctuations
   // Bỏ dấu câu, kí tự đặc biệt
-  // str = str.replace(/\s/g, "");
+  str = str.replace(
+    /!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g,
+    " "
+  );
   return str;
 }
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    height: 400,
-    width: "100%",
-  },
-  control: {
-    padding: theme.spacing(2),
-  },
-}));
-const PagiStyle = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      marginTop: theme.spacing(10),
-      marginRight: "auto",
-      marginLeft: "auto",
-    },
-  },
-}));
 
 export default function SpacingGrid() {
   const [spacing, setSpacing] = React.useState(2);
   const classes = useStyles();
   const [realData, setRealData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const SearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
+  const [filterData, setFilterData] = useState([]);
   const [isDeleteItem, setIsDeleteItem] = useState(false);
-
-  const [currentPage, SetCurrentPage] = useState(1);
-  const [RealPerPage] = useState(8);
-  const IndexLastPost = currentPage * RealPerPage;
-  const IndexFirstPost = IndexLastPost - RealPerPage;
-
-  const PaginateStyle = PagiStyle();
   const apiUrl = API_KEY;
-
   const typingRacing = useRef(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await axios.get(`${apiUrl}/nha`);
-        const ress = data.data.nha;
-        setRealData(ress);
-        const results = ress.filter((item) => {
-          let itemContent = `${item.thanh_pho}/${item.phuong}/${item.quan}`;
-          itemContent = removeVietnameseTones(itemContent);
-          return (
-            itemContent
-              .toLocaleLowerCase()
-              .indexOf(searchTerm.toLocaleLowerCase()) != -1
-          );
-        });
-        setSearchResults(results);
+        setRealData(data.data);
+        setFilterData(data.data);
       } catch (error) {
         console.log("Failed to fetch post list:", error.message);
       }
     };
     fetchData();
-  }, [isDeleteItem, searchTerm]);
-
-  const ChangePagination = (event, value) => {
-    SetCurrentPage(value);
+  }, [isDeleteItem]);
+  const handleChange = (event) => {
+    setSpacing(Number(event.target.value));
   };
+  const handleChangeSearch = (e) => {
+    const value = e.target.value;
+    console.log(value);
 
-  const NumberPage = Math.ceil(searchResults.length / RealPerPage);
+    if (typingRacing.current) {
+      clearTimeout(typingRacing.current);
+    }
+
+    typingRacing.current = setTimeout(() => {
+      let filter = realData.filter((item) => {
+        let itemContent = `${item.thanh_pho}/${item.phuong}/${item.quan}`;
+        return (
+          itemContent
+            .toLocaleLowerCase()
+            .indexOf(removeVietnameseTones(value).toLocaleLowerCase()) != -1
+        );
+      });
+      if (value === "") {
+        setFilterData(realData);
+      } else {
+        setFilterData(filter);
+      }
+    }, 300);
+  };
   const handleDelete = (id) => {};
 
   return (
@@ -129,8 +122,7 @@ export default function SpacingGrid() {
                 "aria-label": "Search",
               },
             }}
-            onChangeSearch={SearchChange}
-            value={searchTerm}
+            onChangeSearch={handleChangeSearch}
           />
         </div>
       </Grid>
@@ -142,7 +134,7 @@ export default function SpacingGrid() {
         </Link>
       </Grid>
       <Grid container justify="flex-start" spacing={spacing}>
-        {searchResults.slice(IndexFirstPost, IndexLastPost).map((value) => (
+        {filterData.map((value) => (
           <Grid xs={3} key={value.id_nha} item>
             {/* <Paper className={classes.paper} /> */}
             <Real
@@ -152,14 +144,6 @@ export default function SpacingGrid() {
           </Grid>
         ))}
       </Grid>
-      <div className={PaginateStyle.root}>
-        <Pagination
-          className="custom-paginate"
-          count={NumberPage}
-          page={currentPage}
-          onChange={ChangePagination}
-        />
-      </div>
     </React.Fragment>
   );
 }

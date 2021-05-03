@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import blankavt from "./blankavt.jpg";
 // core components
-import Grid from '@material-ui/core/Grid';
+import Grid from "@material-ui/core/Grid";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
@@ -14,19 +14,19 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormLabel from '@material-ui/core/FormLabel';
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormLabel from "@material-ui/core/FormLabel";
 
 import avatar from "assets/img/faces/marc.jpg";
 import { API_KEY } from "../../shared/_constant";
 import { API_KEY_IMG } from "../../shared/_constant";
 import { useParams } from "react-router-dom";
-import axios from 'axios'
+import axios from "axios";
 import { FormControl, Input } from "@material-ui/core";
 
-import './styles.css';
+import "./styles.css";
 
 const useStyles = makeStyles((theme) => ({
   cardCategoryWhite: {
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "0",
     fontSize: "14px",
     marginTop: "0",
-    marginBottom: "0"
+    marginBottom: "0",
   },
   cardTitleWhite: {
     color: "#FFFFFF",
@@ -43,8 +43,8 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "300",
     fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
     marginBottom: "3px",
-    textDecoration: "none"
-  }
+    textDecoration: "none",
+  },
 }));
 
 export default function UserProfile() {
@@ -55,30 +55,28 @@ export default function UserProfile() {
   const [name, setName] = React.useState();
   const [address, setAddress] = React.useState();
   const [imgUrl, setImgUrl] = React.useState("");
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState({});
   const { id } = useParams();
   useEffect(() => {
-    // const getLocal = localStorage.getItem('auth');
+    let getLocal = JSON.parse(localStorage.getItem("auth"));
+
     // const userID = JSON.parse(getLocal);
     const fetchData = async () => {
-
-      const data = await axios.get(`${API_KEY}/khach_hang/${id}`)
-
-      if (data.data.status === 'error') {
-        window.location = 'http://localhost:3001/login';
-      }
-      console.log(data);
-
-      setUser(data.data.khach_hang)
-      setValue(data.data.khach_hang.chuc_vu)
-      setEmail(data.data.khach_hang.email)
-      setPhone(data.data.khach_hang.sdt)
-      setName(data.data.khach_hang.ho_ten)
-      setAddress(data.data.khach_hang.dia_chi)
-      console.log(data, 'data')
-      localStorage.setItem('auth', JSON.stringify(data.data.khach_hang))
-      console.log(user, 'user')
-    }
+      const data = await axios.get(`${API_KEY}/khach_hang/${id}`);
+      getLocal = data.data;
+      // console.log(getLocal);
+      // if (!getLocal) {
+      //   window.location = "http://localhost:3001/login";
+      // }
+      setUser(getLocal.khach_hang);
+      setValue(getLocal.khach_hang.chuc_vu);
+      setEmail(getLocal.khach_hang.email);
+      setPhone(getLocal.khach_hang.sdt);
+      setName(getLocal.khach_hang.ho_ten);
+      setAddress(getLocal.khach_hang.dia_chi);
+      // localStorage.setItem("auth", JSON.stringify(data.data.khach_hang));
+      // console.log(user, "user");
+    };
 
     // fetchData()
     // if(!localStorage.getItem('auth')) {
@@ -87,14 +85,14 @@ export default function UserProfile() {
     //   fetchData();
     // }
     fetchData();
-  }, [])
+  }, []);
 
   const handleRoleChange = (event) => {
     setValue(event.target.value);
   };
 
   const handleEmailChange = (event) => {
-    console.log(event)
+    console.log(event);
     setEmail(event.target.value);
   };
 
@@ -114,7 +112,7 @@ export default function UserProfile() {
     const file = e.target.files[0];
     setImgUrl(file);
     console.log(file);
-  }
+  };
 
   const handleUpdateClick = (e) => {
     const id = e.target.getAttribute("name");
@@ -136,31 +134,35 @@ export default function UserProfile() {
         form_data.append(key, postData[key]);
       }
       // console.log(object)
-      axios.post(API_KEY + '/khach_hang/' + id + '?_method=put', form_data)
-        .then(res => {
+      axios
+        .post(API_KEY + "/khach_hang/" + id + "?_method=put", form_data)
+        .then((res) => {
           console.log(res.data);
         })
+        .then((res) => {
+          console.log(res.data);
+        });
     }
   };
 
   const roleName = () => {
     switch (user.chuc_vu) {
       case 0:
-        return "Banned"
+        return "Banned";
         break;
 
       case 1:
-        return "Người Dùng"
+        return "Người Dùng";
         break;
 
       case 2:
-        return "Quản Trị Viên"
+        return "Quản Trị Viên";
         break;
 
       default:
         break;
     }
-  }
+  };
 
   // const disableRole = () => {
   //   switch (userRole) {
@@ -179,32 +181,53 @@ export default function UserProfile() {
   //   }
   // }
 
-  const userRole = JSON.parse(localStorage.getItem('auth')).khach_hang.chuc_vu
+  const userRole = JSON.parse(localStorage.getItem("auth")).khach_hang.chuc_vu;
 
   const setDisableRole = () => {
     switch (userRole) {
       case 2:
-        return <GridItem xs={12} sm={12} md={4}>
-          <FormControl component="fieldset">
-            <FormLabel component="legend">Chức Vụ</FormLabel>
-            <RadioGroup aria-label="gender" name="chuc_vu" value={value} onChange={handleRoleChange}>
-              <FormControlLabel value="0" checked={value == 0 ? true : false} control={<Radio />} label="Banned" />
-              <FormControlLabel value="1" checked={value == 1 ? true : false} control={<Radio />} label="Người Dùng" />
-              <FormControlLabel value="2" checked={value == 2 ? true : false} control={<Radio />} label="Quản Trị Viên" />
-            </RadioGroup>
-          </FormControl>
-        </GridItem>
+        return (
+          <GridItem xs={12} sm={12} md={4}>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Chức Vụ</FormLabel>
+              <RadioGroup
+                aria-label="gender"
+                name="chuc_vu"
+                value={value}
+                onChange={handleRoleChange}
+              >
+                <FormControlLabel
+                  value="0"
+                  checked={value == 0 ? true : false}
+                  control={<Radio />}
+                  label="Banned"
+                />
+                <FormControlLabel
+                  value="1"
+                  checked={value == 1 ? true : false}
+                  control={<Radio />}
+                  label="Người Dùng"
+                />
+                <FormControlLabel
+                  value="2"
+                  checked={value == 2 ? true : false}
+                  control={<Radio />}
+                  label="Quản Trị Viên"
+                />
+              </RadioGroup>
+            </FormControl>
+          </GridItem>
+        );
         break;
 
       default:
         break;
     }
-  }
+  };
 
   return (
     <div>
       <GridContainer>
-
         <GridItem xs={12} sm={12} md={8}>
           <Card>
             <CardHeader color="primary">
@@ -215,13 +238,16 @@ export default function UserProfile() {
               <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className="form-control">
-                    <InputLabel htmlFor="idUser" shrink="true">Mã Khách Hàng</InputLabel>
+                    <InputLabel htmlFor="idUser" shrink="true">
+                      Mã Khách Hàng
+                    </InputLabel>
                     <Input
                       name="id"
                       id="idUser"
                       disabled="true"
                       fullWidth="true"
-                      value={user.id} />
+                      value={user.id}
+                    />
                   </FormControl>
                   {/* <CustomInput
                     labelText="Mã Khách Hàng (disabled)"
@@ -236,14 +262,17 @@ export default function UserProfile() {
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className="form-control">
-                    <InputLabel htmlFor="emailAddress" shrink="true">Email Address</InputLabel>
+                    <InputLabel htmlFor="emailAddress" shrink="true">
+                      Email Address
+                    </InputLabel>
                     <Input
                       name="email"
                       id="emailAddress"
                       //disabled={disableRole()}
                       fullWidth="true"
                       value={email}
-                      onChange={handleEmailChange} />
+                      onChange={handleEmailChange}
+                    />
                   </FormControl>
                   {/* <CustomInput
                     labelText="Email Address"
@@ -262,14 +291,17 @@ export default function UserProfile() {
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className="form-control">
-                    <InputLabel htmlFor="phone" shrink="true">Số Điện Thoại</InputLabel>
+                    <InputLabel htmlFor="phone" shrink="true">
+                      Số Điện Thoại
+                    </InputLabel>
                     <Input
                       name="sdt"
                       id="phone"
                       //disabled={disableRole()}
                       fullWidth="true"
                       value={phone}
-                      onChange={handlePhoneChange} />
+                      onChange={handlePhoneChange}
+                    />
                   </FormControl>
                   {/* <CustomInput
                     labelText="Số Điện Thoại"
@@ -290,14 +322,17 @@ export default function UserProfile() {
               <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className="form-control">
-                    <InputLabel htmlFor="name" shrink="true">Họ Tên</InputLabel>
+                    <InputLabel htmlFor="name" shrink="true">
+                      Họ Tên
+                    </InputLabel>
                     <Input
                       name="ho_ten"
                       id="name"
                       //disabled={disableRole()}
                       fullWidth="true"
                       value={name}
-                      onChange={handleNameChange} />
+                      onChange={handleNameChange}
+                    />
                   </FormControl>
                   {/* <CustomInput
                     labelText="Họ Tên"
@@ -315,14 +350,17 @@ export default function UserProfile() {
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className="form-control">
-                    <InputLabel htmlFor="address" shrink="true">Địa Chỉ</InputLabel>
+                    <InputLabel htmlFor="address" shrink="true">
+                      Địa Chỉ
+                    </InputLabel>
                     <Input
                       name="dia_chi"
                       id="address"
                       //disabled={disableRole()}
                       fullWidth="true"
                       value={address}
-                      onChange={handleAddressChange} />
+                      onChange={handleAddressChange}
+                    />
                   </FormControl>
                   {/* <CustomInput
                       labelText="Địa Chỉ"
@@ -343,21 +381,28 @@ export default function UserProfile() {
               </GridContainer>
             </CardBody>
             <CardFooter>
-              <Button color="primary" name={user.id} onClick={handleUpdateClick}>Chỉnh Sửa</Button>
+              <Button
+                color="primary"
+                name={user.id}
+                onClick={handleUpdateClick}
+              >
+                Chỉnh Sửa
+              </Button>
             </CardFooter>
           </Card>
         </GridItem>
         <GridItem xs={12} sm={12} md={4}>
           <Card profile>
             <CardAvatar profile>
-              <a href="#pablo" onClick={e => e.preventDefault()}>
-                <img src={imgUrl ? window.URL.createObjectURL(imgUrl) : blankavt} alt="..." />
+              <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                <img
+                  src={imgUrl ? window.URL.createObjectURL(imgUrl) : blankavt}
+                  alt="..."
+                />
               </a>
             </CardAvatar>
             <CardHeader style={{ margin: "10px" }}>
-              <label
-                htmlFor="uploadAvatar"
-                style={{ cursor: "pointer" }}>
+              <label htmlFor="uploadAvatar" style={{ cursor: "pointer" }}>
                 Thay Đổi Ảnh Đại Diện
               </label>
               <input
@@ -365,18 +410,19 @@ export default function UserProfile() {
                 name="avatar"
                 type="file"
                 onChange={handleFile}
-                style={{ opacity: 0, position: 'aboslute', zIndex: '-1' }} />
+                style={{ opacity: 0, position: "aboslute", zIndex: "-1" }}
+              />
             </CardHeader>
             <CardBody profile>
-              <h6 className={classes.cardCategory}><b>{roleName()}</b></h6>
+              <h6 className={classes.cardCategory}>
+                <b>{roleName()}</b>
+              </h6>
               <h4 className={classes.cardTitle}>{user.ho_ten}</h4>
-              <p className={classes.description}>
-                {user.dia_chi}
-              </p>
+              <p className={classes.description}>{user.dia_chi}</p>
             </CardBody>
           </Card>
         </GridItem>
       </GridContainer>
-    </div >
+    </div>
   );
 }

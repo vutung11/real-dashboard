@@ -18,7 +18,7 @@ import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 import bgImage from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/reactlogo.png";
 
-import axios from 'axios';
+import axios from "axios";
 import { API_KEY } from "../shared/_constant";
 
 let ps;
@@ -44,20 +44,26 @@ const switchRoutes = (
 const useStyles = makeStyles(styles);
 
 export default function Admin({ ...rest }) {
-
   const searchStr = new URLSearchParams(useLocation().search);
-  const id = searchStr.get('user')
-  const [loading, setLoading] = useState(true)
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await axios.get(`${API_KEY}/khach_hang/${id}`)
-      localStorage.setItem('auth', JSON.stringify(data.data))
-      setLoading(false)
+      let id = searchStr.get("user");
+      console.log(id);
+      if (id) {
+        localStorage.setItem("id", id);
+      } else {
+        id = localStorage.getItem("id");
+      }
+      console.log(id);
+      const data = await axios.get(`${API_KEY}/khach_hang/${id}`);
+      localStorage.setItem("auth", JSON.stringify(data.data));
+      setLoading(false);
+    };
 
-    }
-
-    fetchData()
+    fetchData();
     // return () => { setLoading(false) }
   }, []);
 
@@ -114,34 +120,35 @@ export default function Admin({ ...rest }) {
   // }, [mainPanel]);
   return (
     <div className={classes.wrapper}>
-      { !loading && (<div>
-        <Sidebar
-          routes={routes}
-          logoText={"Realestate"}
-          logo={logo}
-          image={image}
-          handleDrawerToggle={handleDrawerToggle}
-          open={mobileOpen}
-          color={color}
-          {...rest}
-        />
-        <div className={classes.mainPanel} ref={mainPanel}>
-          <Navbar
+      {!loading && (
+        <div>
+          <Sidebar
             routes={routes}
+            logoText={"Realestate"}
+            logo={logo}
+            image={image}
             handleDrawerToggle={handleDrawerToggle}
+            open={mobileOpen}
+            color={color}
             {...rest}
           />
-          {getRoute() ? (
-            <div className={classes.content}>
-              <div className={classes.container}>{switchRoutes}</div>
-            </div>
-          ) : (
-            <div className={classes.map}>{switchRoutes}</div>
-          )}
-          {getRoute() ? <Footer /> : null}
-
+          <div className={classes.mainPanel} ref={mainPanel}>
+            <Navbar
+              routes={routes}
+              handleDrawerToggle={handleDrawerToggle}
+              {...rest}
+            />
+            {getRoute() ? (
+              <div className={classes.content}>
+                <div className={classes.container}>{switchRoutes}</div>
+              </div>
+            ) : (
+              <div className={classes.map}>{switchRoutes}</div>
+            )}
+            {getRoute() ? <Footer /> : null}
+          </div>
         </div>
-      </div>)}
+      )}
     </div>
   );
 }

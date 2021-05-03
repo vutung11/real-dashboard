@@ -29,6 +29,8 @@ import RealDetail from "views/RealDetail/RealDetail.js";
 import AddReal from "views/AddReal/AddReal";
 import ViewReal from "views/ViewReal/ViewReal";
 import ChangePassword from "views/Password/ChangePassword";
+import EditReal from "views/EditReal/EditReal";
+import RealUser from "views/RealUser/RealUser.js";
 
 const dashboards = [
   {
@@ -47,7 +49,7 @@ const dashboards = [
     icon: Person,
     component: UserProfile,
     layout: "/admin",
-    auth: true
+    auth: true,
   },
   {
     path: "/table",
@@ -64,6 +66,21 @@ const dashboards = [
     icon: AppsIcon,
     layout: "/admin",
     component: Real,
+  },
+  // {
+  //   path: "/realuser",
+  //   name: "RealUser",
+  //   icon: Person,
+  //   layout: "/admin",
+  //   component: RealUser,
+  // },
+  {
+    path: "/edit/:id",
+    name: "Edit",
+    icon: AppsIcon,
+    layout: "/admin",
+    hidden: true,
+    component: EditReal,
   },
   {
     path: "/home/:detail",
