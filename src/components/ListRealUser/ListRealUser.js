@@ -88,7 +88,7 @@ export default function SpacingGrid() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await axios.get(`${apiUrl}/nha`);
+        const data = await axios.get(`${apiUrl}/nha/khach_hang/15`);
         const ress = data.data.nha;
         setRealData(ress);
         const results = ress.filter((item) => {

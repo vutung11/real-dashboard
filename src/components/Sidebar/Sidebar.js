@@ -28,20 +28,20 @@ export default function Sidebar(props) {
     return window.location.href.indexOf(routeName) > -1 ? true : false;
   }
   const { color, logo, image, logoText, routes } = props;
-  const [rout, setRout] = useState([])
+  const [rout, setRout] = useState([]);
 
   useEffect(() => {
-    const userRole = JSON.parse(localStorage.getItem('auth'))
-    const data = [...props.routes].filter(item => {
-      if (item.auth) item.path = `/user/` + userRole.khach_hang.id
+    const userRole = JSON.parse(localStorage.getItem("auth"));
+    console.log(userRole);
+    const data = [...props.routes].filter((item) => {
+      if (item.auth) item.path = `/user/` + userRole.khach_hang.id;
       if (!item.role) return item;
-      return item.role === userRole.khach_hang.chuc_vu
-    })
-    console.log(data, data)
+      return item.role === userRole.khach_hang.chuc_vu;
+    });
+    console.log(data, data);
 
-
-    setRout(data)
-  }, [])
+    setRout(data);
+  }, []);
   var links = (
     <List className={classes.list}>
       {rout.map((prop, key) => {
