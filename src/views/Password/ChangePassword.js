@@ -78,29 +78,33 @@ function ChangePassword(props) {
                     console.log("Mật Khẩu Mới Của Bạn Trùng Với Mật Khẩu Cũ!");
                     return;
                 } else {
-                    if (newPassword === confirmPassword && (newPassword).length >= 6) {
-                        // setPassword(newPassword);
-                        // console.log(password);
-
-                        const postData = {
-                            mat_khau: newPassword,
-                        };
-
-                        var form_data = new FormData();
-
-                        for (var key in postData) {
-                            form_data.append(key, postData[key]);
-                        }
-
-                        if (window.confirm("Mật khẩu của bạn sẽ đổi!")) {
-                            axios.post(API_KEY + '/khach_hang/' + id + '?_method=put', form_data)
-                                .then(res => {
-                                    console.log(res.data);
-                                })
-                        }
-
+                    if (!newPassword && !confirmPassword) {
+                        console.log("Mật Khẩu Không Được Để Trống");
+                        return;
                     } else {
-                        console.log("Nhập Sai Mật Khẩu Mới Và Mật Khẩu Phải Trên 6 Kí Tự!")
+                        if (newPassword === confirmPassword && (newPassword).length >= 6) {
+                            // setPassword(newPassword);
+                            // console.log(password);
+
+                            const postData = {
+                                mat_khau: newPassword,
+                            };
+
+                            var form_data = new FormData();
+
+                            for (var key in postData) {
+                                form_data.append(key, postData[key]);
+                            }
+
+                            if (window.confirm("Mật khẩu của bạn sẽ đổi!")) {
+                                axios.post(API_KEY + '/khach_hang/' + id + '?_method=put', form_data)
+                                    .then(res => {
+                                        console.log(res.data);
+                                    })
+                            }
+                        } else {
+                            console.log("Nhập Sai Mật Khẩu Mới Và Mật Khẩu Phải Trên 6 Kí Tự!")
+                        }
                     }
                 }
             } else {

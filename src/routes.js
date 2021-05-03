@@ -38,6 +38,7 @@ const dashboards = [
     icon: Dashboard,
     component: DashboardPage,
     layout: "/admin",
+    role: 2,
   },
   {
     path: "/user/:id",
@@ -46,6 +47,7 @@ const dashboards = [
     icon: Person,
     component: UserProfile,
     layout: "/admin",
+    auth: true
   },
   {
     path: "/table",
@@ -54,6 +56,7 @@ const dashboards = [
     icon: "content_paste",
     component: TableList,
     layout: "/admin",
+    role: 2,
   },
   {
     path: "/real",
@@ -83,14 +86,6 @@ const dashboards = [
     name: "Duyệt bài",
     layout: "/admin",
     component: ViewReal,
-    icon: "",
-    hidden: true,
-  },
-  {
-    path: "/changepass/:id",
-    name: "Đổi Mật Khẩu",
-    layout: "/admin",
-    component: ChangePassword,
     icon: "",
     hidden: true,
   },

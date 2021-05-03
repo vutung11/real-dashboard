@@ -58,11 +58,17 @@ export default function UserProfile() {
   const [user, setUser] = useState({})
   const { id } = useParams();
   useEffect(() => {
+    // const getLocal = localStorage.getItem('auth');
+    // const userID = JSON.parse(getLocal);
     const fetchData = async () => {
-      if (!id) {
+
+      const data = await axios.get(`${API_KEY}/khach_hang/${id}`)
+
+      if (data.data.status === 'error') {
         window.location = 'http://localhost:3001/login';
       }
-      const data = await axios.get(`${API_KEY}/khach_hang/${id}`)
+      console.log(data);
+
       setUser(data.data.khach_hang)
       setValue(data.data.khach_hang.chuc_vu)
       setEmail(data.data.khach_hang.email)
@@ -82,8 +88,6 @@ export default function UserProfile() {
     // }
     fetchData();
   }, [])
-
-
 
   const handleRoleChange = (event) => {
     setValue(event.target.value);
@@ -158,25 +162,27 @@ export default function UserProfile() {
     }
   }
 
-  const disableRole = () => {
-    switch (user.chuc_vu) {
+  // const disableRole = () => {
+  //   switch (userRole) {
 
-      case 1:
-        return false
-        break;
+  //     case 1:
+  //       return false
+  //       break;
 
-      case 2:
-        return true
-        break;
+  //     case 2:
+  //       return true
+  //       break;
 
-      default:
-        return true
-        break;
-    }
-  }
+  //     default:
+  //       return true
+  //       break;
+  //   }
+  // }
+
+  const userRole = JSON.parse(localStorage.getItem('auth')).khach_hang.chuc_vu
 
   const setDisableRole = () => {
-    switch (user.chuc_vu) {
+    switch (userRole) {
       case 2:
         return <GridItem xs={12} sm={12} md={4}>
           <FormControl component="fieldset">
@@ -234,7 +240,7 @@ export default function UserProfile() {
                     <Input
                       name="email"
                       id="emailAddress"
-                      disabled={disableRole()}
+                      //disabled={disableRole()}
                       fullWidth="true"
                       value={email}
                       onChange={handleEmailChange} />
@@ -260,7 +266,7 @@ export default function UserProfile() {
                     <Input
                       name="sdt"
                       id="phone"
-                      disabled={disableRole()}
+                      //disabled={disableRole()}
                       fullWidth="true"
                       value={phone}
                       onChange={handlePhoneChange} />
@@ -288,7 +294,7 @@ export default function UserProfile() {
                     <Input
                       name="ho_ten"
                       id="name"
-                      disabled={disableRole()}
+                      //disabled={disableRole()}
                       fullWidth="true"
                       value={name}
                       onChange={handleNameChange} />
@@ -313,7 +319,7 @@ export default function UserProfile() {
                     <Input
                       name="dia_chi"
                       id="address"
-                      disabled={disableRole()}
+                      //disabled={disableRole()}
                       fullWidth="true"
                       value={address}
                       onChange={handleAddressChange} />
