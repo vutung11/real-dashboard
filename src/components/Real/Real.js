@@ -161,10 +161,10 @@ export default function MediaCard({ item, setIsDelete }) {
         </CardContent>
       </CardActionArea>
       <CardActions className={classes.buttonCard}>
-        <Button color="white" type="submit" onClick={() => UpdateStatus(item)}>
+        <Button type="submit" onClick={() => UpdateStatus(item)}>
           Ẩn Tin
         </Button>
-        <Button color="white" type="submit" onClick={() => UpdateStatus2(item)}>
+        <Button type="submit" onClick={() => UpdateStatus2(item)}>
           Đã Bán
         </Button>
         <IconButton

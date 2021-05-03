@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+
 import ReactDOM from "react-dom";
 // @material-ui/core components
 import { makeStyles, withStyles } from "@material-ui/core/styles";

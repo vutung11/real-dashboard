@@ -63,13 +63,13 @@ const dashboards = [
     layout: "/admin",
     component: Real,
   },
-  {
-    path: "/realuser",
-    name: "RealUser",
-    icon: Person,
-    layout: "/admin",
-    component: RealUser,
-  },
+  // {
+  //   path: "/realuser",
+  //   name: "RealUser",
+  //   icon: Person,
+  //   layout: "/admin",
+  //   component: RealUser,
+  // },
   {
     path: "/edit/:id",
     name: "Edit",

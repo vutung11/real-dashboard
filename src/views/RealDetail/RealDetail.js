@@ -2,6 +2,9 @@ import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
+import { store } from "react-notifications-component";
+import "react-notifications-component/dist/theme.css";
+import "animate.css";
 import "./RealDetail.css";
 import Grid from "@material-ui/core/Grid";
 import GridItem from "components/Grid/GridItem.js";
@@ -49,6 +52,9 @@ const styles = {
 
   sticky: {
     position: "sticky",
+  },
+  cardTitle: {
+    textAlign: "justify",
   },
   cardMota: {
     textAlign: "justify",
@@ -162,34 +168,44 @@ const RealDetail = (props) => {
       </GridItem>
       <GridItem xs={12} sm={12} md={4}>
         <Card profile>
-          <CardAvatar profile>
+          {/* <CardAvatar profile>
             <img
               className="banner"
               src={realData.nha ? API_KEY_IMG + realData.nha.banner : ""}
             ></img>
-          </CardAvatar>
+          </CardAvatar> */}
           <CardBody profile>
-            <h3 className={classes.cardTitle}>
-              {realData.nha ? +realData.nha.gia + " Tỷ" : ""}
-            </h3>
-            <h3 className={classes.cardTitle}>
+            <h4 className={classes.cardTitle}>
+              Địa chỉ:
               {realData.nha
-                ? +realData.nha.dien_tich +
-                  " m2" +
-                  " || " +
-                  realData.nha.so_phong +
-                  " phòng ngủ" +
-                  " || " +
-                  realData.nha.so_toilet +
-                  " toilet"
+                ? realData.nha.duong +
+                  ", Phường" +
+                  realData.nha.phuong +
+                  ", " +
+                  realData.nha.quan +
+                  ", Thành phố " +
+                  realData.nha.thanh_pho
                 : ""}
-            </h3>
-          </CardBody>
-
-          <CardBody profile>
-            <h3 className={classes.cardMota}>
+            </h4>
+            <h4 className={classes.cardTitle}>
+              Giá bán:
+              {realData.nha ? +realData.nha.gia + " Tỷ" : ""}
+            </h4>
+            <h4 className={classes.cardTitle}>
+              Diện tích:
+              {realData.nha ? +realData.nha.dien_tich + " m2" : ""}
+            </h4>
+            <h4 className={classes.cardTitle}>
+              Phòng ngủ:
+              {realData.nha ? +realData.nha.so_phong + " phòng" : ""}
+            </h4>
+            <h4 className={classes.cardTitle}>
+              Toilet:
+              {realData.nha ? +realData.nha.so_toilet + " phòng" : ""}
+            </h4>
+            <h5 className={classes.cardMota}>
               {realData.nha ? realData.nha.mo_ta : ""}
-            </h3>
+            </h5>
           </CardBody>
         </Card>
       </GridItem>

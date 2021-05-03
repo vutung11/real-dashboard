@@ -186,23 +186,7 @@ export default function UserProfile() {
     fetchDataListPhuongXa();
     fetchDataListDuong();
   }, [valInput.quanhuyen]);
-  // useEffect(() => {
 
-  //    const map = new mapboxgl.Map({
-  //     container: mapContainer.current,
-  //     style: "mapbox://styles/mapbox/streets-v11",
-  //     center: [lng, lat],
-  //     zoom: zoom,
-  //   });
-  //   let marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
-  //   map.on("click", function (e) {
-  //     marker.remove();
-  //     setLng(e.lngLat.lng);
-  //     setLat(e.lngLat.lat);
-  //     marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
-  //   });
-  //   return () => map.remove();
-  // });
   const onTabClick = (e, index) => {
     setIndex(index);
   };
@@ -318,29 +302,7 @@ export default function UserProfile() {
       });
     }
   };
-  // const uploadList = async (e) => {
-  //   const file = e.target.files[0];
-  //   var bodyFormData = new FormData();
-  //   bodyFormData.append("link", file);
-  //   console.log(bodyFormData);
-  //   try {
-  //     const res = await axios.post(
-  //       "http://127.0.0.1:8000/api/hinh",
-  //       bodyFormData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       }
-  //     );
-  //     // console.log(res.data);
-  //     // setValInput((preState) => {
-  //     //   return { ...preState, hinh: [...preState.hinh, res.data.link] };
-  //     // });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+
   const deleteImg = async (linkImg) => {
     let x = valInput.hinh;
     console.log(linkImg);
@@ -395,43 +357,27 @@ export default function UserProfile() {
 
       return res2;
     }
-
-    // console.log();
-    // setListImages();
-    //   setValInput({
-    //   thanhpho: res.data.nha.thanh_pho,
-    //   quanhuyen: res.data.nha.quan,
-    //   phuongxa: res.data.nha.phuong,
-    //   duong: res.data.nha.duong,
-    //   loainha: res.data.nha.loai_nha,
-    //   sophong: res.data.nha.so_phong,
-    //   sotoilet: res.data.nha.so_toilet,
-    //   dientich: res.data.nha.dien_tich,
-    //   gia: res.data.nha.gia,
-    //   chitiet: res.data.nha.chitiet,
-    // })
   };
   useEffect(async () => {
-    const {
-      data: { nha },
-    } = await fetchData();
-    const map = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v11",
-      center: [nha.lon, nha.lat],
-      zoom: zoom,
-    });
-    let marker = new mapboxgl.Marker().setLngLat([nha.lon, nha.lat]).addTo(map);
-    map.on("click", function (e) {
-      marker.remove();
-      setLng(e.lngLat.lng);
-      setLat(e.lngLat.lat);
-      marker = new mapboxgl.Marker()
-        .setLngLat([e.lngLat.lng, e.lngLat.lat])
-        .addTo(map);
-    });
-
-    return () => map.remove();
+    // const {
+    //   data: { nha },
+    // } = await fetchData();
+    // const map = new mapboxgl.Map({
+    //   container: mapContainer.current,
+    //   style: "mapbox://styles/mapbox/streets-v11",
+    //   center: [nha.lon, nha.lat],
+    //   zoom: zoom,
+    // });
+    // let marker = new mapboxgl.Marker().setLngLat([nha.lon, nha.lat]).addTo(map);
+    // map.on("click", function (e) {
+    //   marker.remove();
+    //   setLng(e.lngLat.lng);
+    //   setLat(e.lngLat.lat);
+    //   marker = new mapboxgl.Marker()
+    //     .setLngLat([e.lngLat.lng, e.lngLat.lat])
+    //     .addTo(map);
+    // });
+    // return () => map.remove();
   }, []);
   useEffect(() => {
     console.log(listImages);
@@ -442,7 +388,7 @@ export default function UserProfile() {
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card className={classes.cardSize}>
-            <div ref={mapContainer} className="map-container"></div>
+            {/* <div ref={mapContainer} className="map-container"></div> */}
           </Card>
           <Grid container spacing={3} item />
         </GridItem>
@@ -450,13 +396,11 @@ export default function UserProfile() {
       <GridContainer>
         <GridItem xs={12} sm={4}>
           <Card xs={12} sm={4}>
-            {/* <TextField id="outlined-basic" label="Nhập tiêu đề nhà" variant="outlined" />
-          <TextareaAutosize aria-label="empty textarea" placeholder="Empty" /> */}
             <Tabs
               position="static"
               value={index}
               onChange={onTabClick}
-              variant="small"
+              // variant="small"
             >
               <Tab label="Vị trí" />
               <Tab label="Thông tin" />
@@ -478,7 +422,11 @@ export default function UserProfile() {
                       Chọn
                     </option>
                     {listThanhPho.map((e, index) => {
-                      return <option value={e.id}>{e._name}</option>;
+                      return (
+                        <option key={e.id} value={e.id}>
+                          {e._name}
+                        </option>
+                      );
                     })}
                   </NativeSelect>
                 </GridItem>
@@ -516,7 +464,11 @@ export default function UserProfile() {
                     </option>
                     {listPhuongXa &&
                       listPhuongXa.map((e, index) => {
-                        return <option value={e.id}>{e._name}</option>;
+                        return (
+                          <option key={e.id} value={e.id}>
+                            {e._name}
+                          </option>
+                        );
                       })}
                   </NativeSelect>
                 </GridItem>
@@ -535,7 +487,11 @@ export default function UserProfile() {
                     </option>
                     {listDuong &&
                       listDuong.map((e, index) => {
-                        return <option value={e.id}>{e._name}</option>;
+                        return (
+                          <option key={e.id} value={e.id}>
+                            {e._name}
+                          </option>
+                        );
                       })}
                   </NativeSelect>
                 </GridItem>
@@ -707,9 +663,9 @@ export default function UserProfile() {
                   />
                 </Button>
                 <GridContainer>
-                  {valInput.hinh.map((e) => {
+                  {valInput.hinh.map((e, index) => {
                     return (
-                      <GridItem xs={4}>
+                      <GridItem key={index} xs={4}>
                         {/* <p onClick={() => deleteImg(e)}>X</p> */}
                         <IconButton
                           className={classes.buttonDelete}
